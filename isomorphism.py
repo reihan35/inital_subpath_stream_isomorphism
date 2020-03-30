@@ -43,6 +43,18 @@ def preprocessing(V,E,T) :
             pi[i] = k + 1
     return pi
 
+def make_edge_list_from_number(n):
+    E = [n][n]
+    for x in n :
+        for y in n :
+            if y == x + 1 :
+                E[x][y] = 1
+            if y == x - 1:
+                E[x][y] = 1
+            E[x][y] = 0
+    return E
+    
+
 def find_pattern(n,E_prim,V,marked):
     E = make_edge_list_from_number(n)
     if has_pattern(E,E_prim,V):
@@ -51,7 +63,7 @@ def find_pattern(n,E_prim,V,marked):
             if marked[p] == 0 :
                 marked = mark(p)
                 return (p,marked)
-    return null
+    return
 
 def has_pattern(E,E_prim,V):
     w = V[0]
@@ -70,7 +82,7 @@ def path_stream_matching (V,E,T,V_p,E_p,T_p,pi,p):
     E_r = []
     marked_E_p = E_p
     for t in T_p : 
-        (pattern,marked_E_p) = find_pattern(len(p[k+1]),p[k+1],marked_E_p,V)
+        (pattern,marked_E_p) = find_pattern(p[k+1],marked_E_p,V)
         while k>=0 and pattern != None:
             k = pi[k]
             k = k + 1
