@@ -6,26 +6,6 @@ def neighbours(node,E):
             n.append(i)
     return n
 
-def BFS (V,G,s):    
-    visited = []
-    for x in range(0,len(V)):
-        visited.append(0)
-    queue = Queue() 
-    queue.put(s)  
-    visited[s] = 1
-    i=0
-    while (queue.empty() == False):
-        i+=1
-        x  = queue.get()
-        print(x)
-        print("breath = " + str(i))
-        print(neighbours(x,G))
-        for w in neighbours(x,G):
-            if visited[w] == 0: 
-                queue.put(w)             
-                visited[w] = 1
-    return x 
-
 def bfs(V,Eprim,n, start,markedEprim):
     visited = []
     for x in range(0,len(V)):
@@ -41,7 +21,7 @@ def bfs(V,Eprim,n, start,markedEprim):
         if(i==n):
             for p in queue:
                 if p not in markedEprim:
-                    return (-1,p)
+                    return (-1,p,i)
         # get the first path from the queue
         path = queue.pop(0)
         # get the last node from the path
@@ -61,9 +41,34 @@ def bfs(V,Eprim,n, start,markedEprim):
                 queue.append(new_path)
 
     
-    return node
+    return (node,-1,i)
 
-print( bfs([0,1,2,3,4,5,6,7],[[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,1,0,1,1,1,0,0],[0,0,1,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,1,0,0,0,1,0],[0,0,0,0,0,1,0,1],[0,0,0,0,0,0,1,0]],9, 0,[]))
+#print( bfs([0,1,2,3,4,5,6,7],[[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,1,0,1,1,1,0,0],[0,0,1,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,1,0,0,0,1,0],[0,0,0,0,0,1,0,1],[0,0,0,0,0,0,1,0]],7, 0,[]))
 
 
-#print(BFS([0,1,2,3,4,5,6,7],[[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,1,0,1,1,1,0,0],[0,0,1,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,1,0,0,0,1,0],[0,0,0,0,0,1,0,1],[0,0,0,0,0,0,1,0]],0)) 
+def find_pattern(n,Eprim,V,markedEprim):
+    w = V[3]
+    (u,p,dist) = bfs(V,Eprim,n,w,markedEprim)
+    #If we have not found a path of the desired length
+    if (p == -1):
+        (v,p,dist) = bfs(V,Eprim,n,u,markedEprim)
+        if (p!=-1):
+            markedEprim.append(p)
+        else :
+            if (dist >= n):
+                i = 1
+                while (p==-1 or i<len(V)):
+                    i = i + 1
+                    if (V[i]!=u):
+                        (x,p) = bfs(V,Eprim,n,V[i],markedEprim)
+                if (p!=-1):
+                    markedEprim.append(p)
+            else :
+                return -1
+    else:
+        markedEprim.append(p)
+
+    return (p,markedEprim)
+
+
+print(find_pattern(3,[[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,1,0,1,1,1,0,0],[0,0,1,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,1,0,0,0,1,0],[0,0,0,0,0,1,0,1],[0,0,0,0,0,0,1,0]],[0,1,2,3,4,5,6,7],[[3,2,5,6]]))
