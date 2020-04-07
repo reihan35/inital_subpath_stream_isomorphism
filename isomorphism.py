@@ -2,30 +2,28 @@ from queue import Queue
 
 def neighbours(node,E):
     n = []
-    for i in len(E[node]):
+    for i in range(0,len(E[node])):
         if E[node][i]==1:
             n.append(i)
     return n
 
-def BFS (V,G,s):                 #Where G is the graph and s is the source node
+def BFS (V,G,s):    
     visited = []
-    for x in len(V):
-        visited[x] = 0
-
+    for x in range(0,len(V)):
+        visited.append(0)
     queue = Queue() 
-    queue.put(s)  #Inserting s in queue until all its neighbour vertices are marked.
-
+    queue.put(s)  
     visited[s] = 1
-      
     while (queue.empty() == False):
-        #Removing that vertex from queue,whose neighbour will be visited now
-        x  = queue.get() 
-        #processing all the neighbours of v  
+        x  = queue.get()
+        print(x)
+        print(neighbours(x,G))
         for w in neighbours(x,G):
             if visited[w] == 0: 
-                queue.put(w)             #Stores w in Q to further visit its neighbour
+                queue.put(w)             
                 visited[w] = 1
     return x
+
 
 #The input is a path stream
 def preprocessing(V,E,T) : 
@@ -43,21 +41,9 @@ def preprocessing(V,E,T) :
             pi[i] = k + 1
     return pi
 
-def make_edge_list_from_number(n):
-    E = [n][n]
-    for x in n :
-        for y in n :
-            if y == x + 1 :
-                E[x][y] = 1
-            if y == x - 1:
-                E[x][y] = 1
-            E[x][y] = 0
-    return E
-    
 
 def find_pattern(n,E_prim,V,marked):
-    E = make_edge_list_from_number(n)
-    if has_pattern(E,E_prim,V):
+    if has_pattern(n,E_prim,V):
         pathes = pathes_of_size(n,E_prim)
         for p in pathes:
             if marked[p] == 0 :
@@ -65,13 +51,12 @@ def find_pattern(n,E_prim,V,marked):
                 return (p,marked)
     return
 
-def has_pattern(E,E_prim,V):
+def has_pattern(n,E_prim,V):
     w = V[0]
-    u = BFS(V,E,w)
-    v = BFS(V,E,u)
+    u = BFS(V,E_prim,w)
+    v = BFS(V,E_prim,u)
 
-    return distance(u,v) > len(E_prim[t])
-
+    return distance(u,v) > n
 
 
 def path_stream_matching (V,E,T,V_p,E_p,T_p,pi,p):
