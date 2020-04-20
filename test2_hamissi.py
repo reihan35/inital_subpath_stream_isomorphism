@@ -56,6 +56,42 @@ def graphsequal(g1,g2):
                 return False
     return True
 
+from queue import Queue
+def neighbours(node,E):
+    n = []
+    for i in range(0,len(E[node])):
+        if E[node][i]==1:
+            n.append(i)
+    return n
+
+def bfs(gprim,start):
+    visited = []
+    for x in range(0,len(gprim)):
+        visited.append(0)
+    queue = []
+    all_paths = []
+
+    queue.append([start])
+    all_paths.append([start])
+    
+    i=0
+    while queue:
+        path = queue.pop(0)
+        node = path[-1]
+        visited[node]=1
+        for adjacent in neighbours(node,gprim):
+            print(adjacent)
+            if visited[adjacent]==0:
+                i = i + 1 
+                new_path = list(path)
+                new_path.append(adjacent)
+                queue.append(new_path)
+                all_paths.append(new_path)
+    
+    return all_paths
+
+
+
 def preprocessing(E,T):
     pi = []
     pi.append(-1)
@@ -68,11 +104,21 @@ def preprocessing(E,T):
 
 #print(preprocessing(to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/pattern.txt")),2,to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target.txt")),5))
 
-#def find_pattern(t,gprim,Vprim,mapi,tprim):
- #   no_connected = True
- #   for a in range (len(gprim)):
-  #      if ()
-  #  if mapi == [] or no_connected 
+
+def find_pattern(t,gprim,Vprim,mapi,tprim):
+    no_connected = True
+    testing = []
+    for i in range(len(gprim)):
+        for j in range(len(gprim)) :
+            if gprim[i][j] == 1:
+                testing.append(i,j)
+    for vertice in testing:
+        if (mapi[vertice]==-1):
+            no_connected = False
+    
+    if mapi == [] or no_connected :
+        w = v[0]
+
 
 def path_stream_matching(E,T,Eprim,Tprim):
     pi = preprocessing(E,T)
@@ -80,7 +126,7 @@ def path_stream_matching(E,T,Eprim,Tprim):
     i = 0
     result = []
     mapi = []
-    for t in range(Tprim):
+    for t in range(0,Tprim):
         mapi = find_pattern()
         while k>=0 and map != []:
             k = pi[k]
