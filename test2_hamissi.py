@@ -103,23 +103,61 @@ def preprocessing(E,T):
     return pi
 
 #print(preprocessing(to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/pattern.txt")),2,to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target.txt")),5))
+def shrink_paths(paths,n):
+    maxList = max((x) for x in paths) 
+    if len(maxList) != n :
+        paths.remove(maxList)
+        maxList2 = max((x) for x in paths)
+    else:
+        return (maxList,[])
+    return (maxList,maxList2)
 
+def path_of_size(paths,n):
+    maxList = max((x) for x in paths) 
+    for path in paths:
+        if len(path)>=n:
+            return (path,maxList[len(maxList)-1])
+    return (null,maxList)
 
 def find_pattern(t,gprim,Vprim,mapi,tprim):
-    no_connected = True
+    no_associated = True
     testing = []
     for i in range(len(gprim)):
         for j in range(len(gprim)) :
             if gprim[i][j] == 1:
                 testing.append(i,j)
+    
     for vertice in testing:
         if (mapi[vertice]==-1):
-            no_connected = False
+            no_associated = False
+            (path1,path2)=shrink_paths(bfs(gprim,vertice),len(testing))
     
-    if mapi == [] or no_connected :
+    n = len(testing)
+
+    if mapi == [] or no_associated :
         w = v[0]
+        paths = bfs(gprim,w)
+        (potential_path,maxList) = path_of_size(paths,n)
+        if potential_path == null:
+            u = maxList[len(maxList)-1]
+            paths = bfs(gprim,u)
+            (potential_path,maxList) = path_of_size(paths,n)
+            v = maxList[len(maxList)-1]
+            if potential_path == null:
+                if len(maxList) < n:
+                    return -1
+                else:
+                    i = 1
+                    while potential_path == null:
+                        i=i+1
+                        if(v[i]!=u or v[i]!=v):
+                            paths = bfs(gprim,v[i])
+                            (potential_path,maxList) = path_of_size(paths,n)
+    else:
 
+    return potential_path
 
+        
 def path_stream_matching(E,T,Eprim,Tprim):
     pi = preprocessing(E,T)
     k = 0
