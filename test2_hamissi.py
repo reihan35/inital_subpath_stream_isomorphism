@@ -1,39 +1,26 @@
+from queue import Queue
 def file_to_graphs(file):
     f = open(file, "r")
     a = -1
     edges = []
     graphs = []
     for line in f : 
-        #print("I am")
         data = line.split()
-        #print(data)
-        #print("data[0]", data[0])
-        #print( "a", a)
-        #print(data[0] == a)
         if data[0] == a:
             edges.append(data[1:])
-            #print(edges)
         else:
-            #graphs.append(edges)
-            #print("avant" + str(graphs))
             edges = []
             edges.append(data[1:])
             graphs.append(edges)
-            #print("apres" + str(graphs))
         a = data[0]
     return graphs
 
 #print(file_to_graphs("/home/fatemeh/Bureau/Stage/graph.txt"))
 
 def to_adjacency(edges,n):
-    #print(edges)
-    #size = int(edges[len(edges)-1][1])
     size = n
     res = [ [ 0 for i in range(size+1) ] for j in range(size+1) ] 
-    #print(size)
-    #print(res)
     for edge in edges:
-        #print(edge)
         res[int(edge[0])][int(edge[1])] = 1 
         res[int(edge[1])][int(edge[0])] = 1
     return res
@@ -47,7 +34,7 @@ def to_list_of_matrices(graphs,n):
         matrices.append(to_adjacency(graph,n))
     return matrices
 
-print(to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target.txt"),5))
+#print(to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target.txt"),5))
 
 def graphsequal(g1,g2):
     for i in range (len(g1)) :
@@ -56,7 +43,6 @@ def graphsequal(g1,g2):
                 return False
     return True
 
-from queue import Queue
 def neighbours(node,E):
     n = []
     for i in range(0,len(E[node])):
@@ -90,8 +76,6 @@ def bfs(gprim,start):
     
     return all_paths
 
-
-
 def preprocessing(E,T):
     pi = []
     pi.append(-1)
@@ -117,56 +101,82 @@ def path_of_size(paths,n):
     for path in paths:
         if len(path)>=n:
             return (path,maxList[len(maxList)-1])
-    return (null,maxList)
+    return (-1,maxList)
 
-def find_pattern(t,gprim,Vprim,mapi,tprim):
+def find_specific_path_using_bfs(paths,path_to_match,mapi):
+    for path in paths:
+        if len(path)==len(path_to_match):
+            for i in len(path):
+                if (path_to_match[i] in mapi and mapi[path_to_match[i]] == path[i]):
+                    j=j+1
+        j = 0
+        if j == len(path):
+            found = path
+            break
+    '''for v in found:
+        if (paths_to_match[i] not in mapi):
+            mapi[paths_to_match[i]] = path[i]'''
+    return found
+
+def find_pattern(gprim,g,Vprim,mapi):
     no_associated = True
     testing = []
-    for i in range(len(gprim)):
-        for j in range(len(gprim)) :
-            if gprim[i][j] == 1:
+    for i in range(len(g)):
+        for j in range(len(g)) :
+            if g[i][j] == 1:
                 testing.append(i,j)
     
     for vertice in testing:
         if (mapi[vertice]==-1):
             no_associated = False
-            (path1,path2)=shrink_paths(bfs(gprim,vertice),len(testing))
+            g_to_paths = bfs(g,vertice)
+            (path1,path2)=shrink_paths(g_to_paths,len(testing))
+            break
     
     n = len(testing)
 
     if mapi == [] or no_associated :
-        w = v[0]
+        w = Vprim[0]
         paths = bfs(gprim,w)
         (potential_path,maxList) = path_of_size(paths,n)
-        if potential_path == null:
+        if potential_path == -1:
             u = maxList[len(maxList)-1]
             paths = bfs(gprim,u)
             (potential_path,maxList) = path_of_size(paths,n)
             v = maxList[len(maxList)-1]
-            if potential_path == null:
+            if potential_path == -1:
                 if len(maxList) < n:
-                    return -1
+                    return []
                 else:
                     i = 1
-                    while potential_path == null:
+                    while potential_path == -1:
                         i=i+1
-                        if(v[i]!=u or v[i]!=v):
-                            paths = bfs(gprim,v[i])
+                        if(Vprim[i]!=u or Vprim[i]!=v):
+                            paths = bfs(gprim,Vprim[i])
                             (potential_path,maxList) = path_of_size(paths,n)
     else:
-
-    return potential_path
+        g_to_unique_path = max((x) for x in g_to_paths) 
+        potential_path1 = find_specific_path_using_bfs(g_to_unique_path,path1,mapi)
+        potential_path = find_specific_path_using_bfs(g_to_unique_path,path2,mapi)
+        for v in potential_path1:
+            if (g_to_unique_path[i] not in mapi):
+                mapi[g_to_unique_path[i]] = potential_path1[i]
+    
+    for v in potential_path:
+        if (g_to_unique_path[i] not in mapi):
+            mapi[g_to_unique_path[i]] = potential_path[i]
+    return mapi
 
         
-def path_stream_matching(E,T,Eprim,Tprim):
+def path_stream_matching(E,T,V,Eprim,Tprim,Vprim):
     pi = preprocessing(E,T)
     k = 0
     i = 0
     result = []
     mapi = []
     for t in range(0,Tprim):
-        mapi = find_pattern()
-        while k>=0 and map != []:
+        mapi = find_pattern(Eprim[t],E[t],Vprim,mapi)
+        while k>=0 and mapi != []:
             k = pi[k]
             k = k + 1
             if k == T :

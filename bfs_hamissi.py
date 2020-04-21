@@ -31,8 +31,8 @@ def bfs(gprim,start):
                 all_paths.append(new_path)
     
     return all_paths
-
-def bfs2(gprim,start):
+'''
+def find_specific_path_using_bfs(gprim,start,path):
     visited = []
     for x in range(0,len(gprim)):
         visited.append(0)
@@ -56,4 +56,4 @@ def bfs2(gprim,start):
                 queue.append(new_path)
                 all_paths.append(new_path)
     
-    return all_paths
+    return all_paths'''
