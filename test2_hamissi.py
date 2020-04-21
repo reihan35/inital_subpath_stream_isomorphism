@@ -96,12 +96,17 @@ def shrink_paths(paths,n):
         return (maxList,[])
     return (maxList,maxList2)
 
+#print(shrink_paths([[1],[1,2,4],[1,2,3]],4))
+
+
 def path_of_size(paths,n):
     maxList = max((x) for x in paths) 
     for path in paths:
         if len(path)>=n:
             return (path,maxList[len(maxList)-1])
     return (-1,maxList)
+
+#print(path_of_size([[1],[1,2],[1,2,3,]],4))
 
 def find_specific_path_using_bfs(paths,path_to_match,mapi):
     for path in paths:
@@ -117,6 +122,7 @@ def find_specific_path_using_bfs(paths,path_to_match,mapi):
         if (paths_to_match[i] not in mapi):
             mapi[paths_to_match[i]] = path[i]'''
     return found
+print(find_specific_path_using_bfs())
 
 def find_pattern(gprim,g,Vprim,mapi):
     no_associated = True
