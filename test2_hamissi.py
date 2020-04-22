@@ -66,7 +66,7 @@ def bfs(gprim,start):
         node = path[-1]
         visited[node]=1
         for adjacent in neighbours(node,gprim):
-            print(adjacent)
+            #print(adjacent)
             if visited[adjacent]==0:
                 i = i + 1 
                 new_path = list(path)
@@ -109,20 +109,30 @@ def path_of_size(paths,n):
 #print(path_of_size([[1],[1,2],[1,2,3,]],4))
 
 def find_specific_path_using_bfs(paths,path_to_match,mapi):
+    j = 0
     for path in paths:
+        print("path_to_match" + str(path_to_match))
+        print("c'est ce path la qu'on regarde" + str(path))
         if len(path)==len(path_to_match):
-            for i in len(path):
+            #print("c'est ce path la qu'on regarde" + str(path))
+            for i in range (0,len(path)):
+                #print("je rentre ici")
+                #print(path_to_match[i])
+                #print(path[i])
                 if (path_to_match[i] in mapi and mapi[path_to_match[i]] == path[i]):
                     j=j+1
-        j = 0
-        if j == len(path):
-            found = path
-            break
-    '''for v in found:
-        if (paths_to_match[i] not in mapi):
-            mapi[paths_to_match[i]] = path[i]'''
-    return found
-print(find_specific_path_using_bfs())
+                elif (path_to_match[i] not in mapi and path[i] not in mapi.values()):
+                    #print("Bien sur que je comprends")
+                    j = j+1
+
+            if j == len(path):
+                return path
+            j = 0
+    return []
+
+#print(bfs([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],0))
+
+#print(find_specific_path_using_bfs(bfs([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],0),[0,3],{0:0,1:1,2:2}))
 
 def find_pattern(gprim,g,Vprim,mapi):
     no_associated = True
@@ -130,15 +140,17 @@ def find_pattern(gprim,g,Vprim,mapi):
     for i in range(len(g)):
         for j in range(len(g)) :
             if g[i][j] == 1:
-                testing.append(i,j)
+                testing.append(i)
     
     for vertice in testing:
-        if (mapi[vertice]==-1):
+        if vertice in mapi :
             no_associated = False
+            start = mapi[vertice]
             g_to_paths = bfs(g,vertice)
+            g_to_unique_path = max((x) for x in g_to_paths)
             (path1,path2)=shrink_paths(g_to_paths,len(testing))
             break
-    
+
     n = len(testing)
 
     if mapi == [] or no_associated :
@@ -152,7 +164,7 @@ def find_pattern(gprim,g,Vprim,mapi):
             v = maxList[len(maxList)-1]
             if potential_path == -1:
                 if len(maxList) < n:
-                    return []
+                    return -1
                 else:
                     i = 1
                     while potential_path == -1:
@@ -161,9 +173,11 @@ def find_pattern(gprim,g,Vprim,mapi):
                             paths = bfs(gprim,Vprim[i])
                             (potential_path,maxList) = path_of_size(paths,n)
     else:
-        g_to_unique_path = max((x) for x in g_to_paths) 
-        potential_path1 = find_specific_path_using_bfs(g_to_unique_path,path1,mapi)
-        potential_path = find_specific_path_using_bfs(g_to_unique_path,path2,mapi)
+        #print("g_to_unique_path" + str(g_to_unique_path))
+        paths = bfs(gprim,start)
+        potential_path1 = find_specific_path_using_bfs(paths,path1,mapi)
+        potential_path = find_specific_path_using_bfs(paths,path2,mapi)
+        
         for v in potential_path1:
             if (g_to_unique_path[i] not in mapi):
                 mapi[g_to_unique_path[i]] = potential_path1[i]
@@ -173,16 +187,18 @@ def find_pattern(gprim,g,Vprim,mapi):
             mapi[g_to_unique_path[i]] = potential_path[i]
     return mapi
 
+find_pattern([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],[[0,0,0,1],[0,0,0,0],[0,0,0,0],[1,0,0,0]],[0,1,2,3],{0:0,1:1,2:2})
+
         
 def path_stream_matching(E,T,V,Eprim,Tprim,Vprim):
     pi = preprocessing(E,T)
     k = 0
     i = 0
     result = []
-    mapi = []
+    mapi = dict()
     for t in range(0,Tprim):
         mapi = find_pattern(Eprim[t],E[t],Vprim,mapi)
-        while k>=0 and mapi != []:
+        while k>=0 and mapi != -1:
             k = pi[k]
             k = k + 1
             if k == T :
