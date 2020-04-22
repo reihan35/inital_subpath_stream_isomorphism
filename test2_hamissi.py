@@ -135,12 +135,13 @@ def find_specific_path_using_bfs(paths,path_to_match,mapi):
 #print(find_specific_path_using_bfs(bfs([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],0),[0,3],{0:0,1:1,2:2}))
 
 def find_pattern(gprim,g,Vprim,mapi):
+    print("voici mapi" + str(mapi))
     no_associated = True
     testing = []
     g_to_unique_path = None
     for i in range(len(g)):
         for j in range(len(g)) :
-            if g[i][j] == 1:
+            if g[i][j] == 1 and i not in testing:
                 testing.append(i)
     
     for vertice in testing:
@@ -153,11 +154,15 @@ def find_pattern(gprim,g,Vprim,mapi):
             break
 
     n = len(testing)
+    print("testing vaut " + str(testing))
+    print("n vaut " + str(n))
 
     if mapi == [] or no_associated :
         w = Vprim[0]
         paths = bfs(gprim,w)
         (potential_path,maxList) = path_of_size(paths,n)
+        print("potential" + str(potential_path))
+        print("maxList" + str(maxList))
         if potential_path == -1:
             u = maxList[len(maxList)-1]
             paths = bfs(gprim,u)
@@ -165,7 +170,7 @@ def find_pattern(gprim,g,Vprim,mapi):
             v = maxList[len(maxList)-1]
             if potential_path == -1:
                 if len(maxList) < n:
-                    return -1
+                    return {}
                 else:
                     i = 1
                     while potential_path == -1:
@@ -192,21 +197,29 @@ def find_pattern(gprim,g,Vprim,mapi):
             mapi[g_to_unique_path[i]] = potential_path[i]
     return mapi
 
-print(find_pattern([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],[[0,0,0,1],[0,0,0,0],[0,0,0,0],[1,0,0,0]],[0,1,2,3],{}))
+#print(find_pattern([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],[[0,0,0,1],[0,0,0,0],[0,0,0,0],[1,0,0,0]],[0,1,2,3],{}))
 
         
-def path_stream_matching(E,T,V,Eprim,Tprim,Vprim):
+def path_stream_matching(E,T,Eprim,Tprim,Vprim):
     pi = preprocessing(E,T)
+    print(pi)
     k = 0
     i = 0
     result = []
     mapi = dict()
     for t in range(0,Tprim):
         mapi = find_pattern(Eprim[t],E[t],Vprim,mapi)
-        while k>=0 and mapi != -1:
+        print("mapi vaut " + str(mapi))
+        while k>=0 and mapi != {}:
             k = pi[k]
-            k = k + 1
-            if k == T :
-                k = pi[k]
-                result.append(t,mapi)
+        k = k + 1
+        print(k)
+        if k == T :
+            k = pi[k]
+            result.append((t,mapi))
     return result
+
+example_target = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target.txt"),4)
+example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern.txt"),4)
+
+print(path_stream_matching(example_pattern,2,example_target,2,[0,1,2,3]))
