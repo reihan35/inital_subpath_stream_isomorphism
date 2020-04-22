@@ -141,11 +141,14 @@ def find_pattern(gprim,g,Vprim,mapi):
             g_to_paths = bfs(g,vertice)
             g_to_unique_path = max((x) for x in g_to_paths)
             (path1,path2)=shrink_paths(g_to_paths,len(testing))
+            print("path1 vaut " + str(path1))
+            print("path2 vaut " + str(path2))
             break
 
     n = len(testing)
     print("testing vaut " + str(testing))
     print("n vaut " + str(n))
+
 
     if mapi == [] or no_associated :
         w = Vprim[0]
@@ -173,7 +176,7 @@ def find_pattern(gprim,g,Vprim,mapi):
         paths = bfs(gprim,start)
         potential_path1 = find_specific_path_using_bfs(paths,path1,mapi)
         potential_path = find_specific_path_using_bfs(paths,path2,mapi)
-        
+        print("je suis Laaaaa " + str(potential_path1))
         for i in range (len(potential_path1)):
             if (g_to_unique_path[i] not in mapi):
                 mapi[g_to_unique_path[i]] = potential_path1[i]
@@ -194,7 +197,7 @@ def preprocessing(E,T):
     for i in range (0,T-1):
         pi.append(-1)
     k = -1
-    for i in range (0,T-1):
+    for i in range (1,T-1):
         print("k " + str(k))
         print("i " + str(i))
         print("E[k+1]" + str(E[k+1]))
@@ -207,21 +210,24 @@ def preprocessing(E,T):
 
         
 def path_stream_matching(E,T,Eprim,Tprim,Vprim):
-    pi = preprocessing(E,T)
+    #pi = preprocessing(E,T)
+    pi = [0,0]
     print(pi)
     k = 0
     i = 0
     result = []
     mapi = dict()
     for t in range(0,Tprim):
+        print("Eprim " + str(Eprim[t]))
+        print("E " + str(E[t]))
         mapi = find_pattern(Eprim[t],E[t],Vprim,mapi)
         print("mapi vaut " + str(mapi))
-        while k>=0 and mapi != {}:
+        while k>=0 and mapi == {}:
             k = pi[k]
         k = k + 1
-        print(k)
+        print("k VAUUUTT " + str(k))
         if k == T :
-            k = pi[k]
+            k = pi[k-1]
             result.append((t,mapi))
     return result
 
