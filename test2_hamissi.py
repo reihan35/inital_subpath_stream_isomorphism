@@ -137,6 +137,7 @@ def find_specific_path_using_bfs(paths,path_to_match,mapi):
 def find_pattern(gprim,g,Vprim,mapi):
     no_associated = True
     testing = []
+    g_to_unique_path = None
     for i in range(len(g)):
         for j in range(len(g)) :
             if g[i][j] == 1:
@@ -178,16 +179,20 @@ def find_pattern(gprim,g,Vprim,mapi):
         potential_path1 = find_specific_path_using_bfs(paths,path1,mapi)
         potential_path = find_specific_path_using_bfs(paths,path2,mapi)
         
-        for v in potential_path1:
+        for i in range (len(potential_path1)):
             if (g_to_unique_path[i] not in mapi):
                 mapi[g_to_unique_path[i]] = potential_path1[i]
     
-    for v in potential_path:
+    if g_to_unique_path == None:
+        g_to_paths = bfs(g,testing[0])
+        g_to_unique_path = max((x) for x in g_to_paths)
+    
+    for i in range(len(potential_path)):
         if (g_to_unique_path[i] not in mapi):
             mapi[g_to_unique_path[i]] = potential_path[i]
     return mapi
 
-find_pattern([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],[[0,0,0,1],[0,0,0,0],[0,0,0,0],[1,0,0,0]],[0,1,2,3],{0:0,1:1,2:2})
+print(find_pattern([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],[[0,0,0,1],[0,0,0,0],[0,0,0,0],[1,0,0,0]],[0,1,2,3],{}))
 
         
 def path_stream_matching(E,T,V,Eprim,Tprim,Vprim):
