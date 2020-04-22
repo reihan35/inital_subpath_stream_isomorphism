@@ -76,17 +76,7 @@ def bfs(gprim,start):
     
     return all_paths
 
-def preprocessing(E,T):
-    pi = []
-    pi.append(-1)
-    k = -1
-    for i in range (0,T):
-        while k >= 0 and graphsequal(E[k+1],E[i]) == False:
-            k=pi[k]
-            pi[i] = k+1
-    return pi
 
-#print(preprocessing(to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/pattern.txt")),2,to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target.txt")),5))
 def shrink_paths(paths,n):
     maxList = max((x) for x in paths) 
     if len(maxList) != n :
@@ -199,6 +189,19 @@ def find_pattern(gprim,g,Vprim,mapi):
 
 #print(find_pattern([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],[[0,0,0,1],[0,0,0,0],[0,0,0,0],[1,0,0,0]],[0,1,2,3],{}))
 
+def preprocessing(E,T):
+    pi = []
+    for i in range (1,T+1):
+        pi.append(-1)
+    k = -1
+    for i in range (1,T+1):
+        while k >= 0 and graphsequal(E[k+1],E[i]) == False:
+            k=pi[k]
+        k = k+1
+        pi[i] = k
+    return pi
+
+#print(preprocessing(to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/pattern.txt")),2,to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target.txt")),5))
         
 def path_stream_matching(E,T,Eprim,Tprim,Vprim):
     pi = preprocessing(E,T)
@@ -221,5 +224,7 @@ def path_stream_matching(E,T,Eprim,Tprim,Vprim):
 
 example_target = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target.txt"),4)
 example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern.txt"),4)
+
+
 
 print(path_stream_matching(example_pattern,2,example_target,2,[0,1,2,3]))
