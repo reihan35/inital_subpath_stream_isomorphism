@@ -31,7 +31,7 @@ def to_adjacency(edges,n):
 def to_list_of_matrices(graphs,n):
     matrices = []
     for graph in graphs:
-        matrices.append(to_adjacency(graph,n))
+        matrices.append(to_adjacency(graph,n-1))
     return matrices
 
 #print(to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target.txt"),5))
@@ -101,8 +101,8 @@ def path_of_size(paths,n):
 def find_specific_path_using_bfs(paths,path_to_match,mapi):
     j = 0
     for path in paths:
-        print("path_to_match" + str(path_to_match))
-        print("c'est ce path la qu'on regarde" + str(path))
+        #print("path_to_match" + str(path_to_match))
+        #print("c'est ce path la qu'on regarde" + str(path))
         if len(path)==len(path_to_match):
             #print("c'est ce path la qu'on regarde" + str(path))
             for i in range (0,len(path)):
@@ -125,7 +125,7 @@ def find_specific_path_using_bfs(paths,path_to_match,mapi):
 #print(find_specific_path_using_bfs(bfs([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],0),[0,3],{0:0,1:1,2:2}))
 
 def find_pattern(gprim,g,Vprim,mapi):
-    print("voici mapi" + str(mapi))
+    #print("voici mapi" + str(mapi))
     no_associated = True
     testing = []
     g_to_unique_path = None
@@ -141,21 +141,21 @@ def find_pattern(gprim,g,Vprim,mapi):
             g_to_paths = bfs(g,vertice)
             g_to_unique_path = max((x) for x in g_to_paths)
             (path1,path2)=shrink_paths(g_to_paths,len(testing))
-            print("path1 vaut " + str(path1))
-            print("path2 vaut " + str(path2))
+            #print("path1 vaut " + str(path1))
+            #print("path2 vaut " + str(path2))
             break
 
     n = len(testing)
-    print("testing vaut " + str(testing))
-    print("n vaut " + str(n))
+    #print("testing vaut " + str(testing))
+    #print("n vaut " + str(n))
 
 
     if mapi == [] or no_associated :
         w = Vprim[0]
         paths = bfs(gprim,w)
         (potential_path,maxList) = path_of_size(paths,n)
-        print("potential" + str(potential_path))
-        print("maxList" + str(maxList))
+        #print("potential" + str(potential_path))
+        #print("maxList" + str(maxList))
         if potential_path == -1:
             u = maxList[len(maxList)-1]
             paths = bfs(gprim,u)
@@ -176,7 +176,7 @@ def find_pattern(gprim,g,Vprim,mapi):
         paths = bfs(gprim,start)
         potential_path1 = find_specific_path_using_bfs(paths,path1,mapi)
         potential_path = find_specific_path_using_bfs(paths,path2,mapi)
-        print("je suis Laaaaa " + str(potential_path1))
+        #print("je suis Laaaaa " + str(potential_path1))
         for i in range (len(potential_path1)):
             if (g_to_unique_path[i] not in mapi):
                 mapi[g_to_unique_path[i]] = potential_path1[i]
@@ -193,39 +193,46 @@ def find_pattern(gprim,g,Vprim,mapi):
 #print(find_pattern([[0,1,0,1],[1,0,1,0],[0,1,0,0],[1,0,0,0]],[[0,0,0,1],[0,0,0,0],[0,0,0,0],[1,0,0,0]],[0,1,2,3],{}))
 
 def preprocessing(E,T):
+    if len(E) == 2 and graphsequal(E[0],E[1]) == True:
+        return [-1,0]
     pi = []
-    for i in range (0,T-1):
-        pi.append(-1)
-    k = -1
-    for i in range (1,T-1):
+    for i in range (0,T):
+        pi.append(-2)
+    k = -2
+    for i in range (1,T):
         print("k " + str(k))
         print("i " + str(i))
         print("E[k+1]" + str(E[k+1]))
         print("E[i]" + str(E[i]))
-        while k >= 0 and graphsequal(E[k+1],E[i]) == False:
+        print("Pi avant " + str(pi))
+        while k >= -1 and graphsequal(E[k+1],E[i]) == False:
             k=pi[k]
+            print("dans la boucle = " + str(k))
         k = k+1
         pi[i] = k
+        print("Pi apres " + str(pi))
+    pi[0] = -1
+
     return pi
 
         
 def path_stream_matching(E,T,Eprim,Tprim,Vprim):
-    #pi = preprocessing(E,T)
-    pi = [0,0]
-    print(pi)
+    pi = preprocessing(E,T)
+    #pi = [0,0]
+    #print(pi)
     k = 0
     i = 0
     result = []
     mapi = dict()
     for t in range(0,Tprim):
-        print("Eprim " + str(Eprim[t]))
-        print("E " + str(E[t]))
+        #print("Eprim " + str(Eprim[t]))
+        #print("E " + str(E[t]))
         mapi = find_pattern(Eprim[t],E[t],Vprim,mapi)
-        print("mapi vaut " + str(mapi))
+        #print("mapi vaut " + str(mapi))
         while k>=0 and mapi == {}:
             k = pi[k]
         k = k + 1
-        print("k VAUUUTT " + str(k))
+        #print("k VAUUUTT " + str(k))
         if k == T :
             k = pi[k-1]
             result.append((t,mapi))
@@ -235,6 +242,7 @@ example_target = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/
 example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern.txt"),4)
 
 
-#print(preprocessing(example_pattern,2))
+print(example_pattern)
+print(preprocessing(example_pattern,7))
 
-print(path_stream_matching(example_pattern,2,example_target,2,[0,1,2,3]))
+#print(path_stream_matching(example_pattern,2,example_target,2,[0,1,2,3]))
