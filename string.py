@@ -26,3 +26,21 @@ def preprocessing(P,m):
     return pi
 
 print(preprocessing("ababababca",len("ababababca")))    
+
+
+def matching(T,P,pi):
+    k = 0
+    for i in range (0,len(T)):
+        print("*****debut de boucle ")
+        print("k = " + str(k))
+        while k >= 0 and P[k+1] != T[i]:
+            #print("dans la boucle k" + str(k))
+            #print("dans la boucle pi[k]" + str(pi[k]))
+            k = pi[k]
+        k = k + 1
+        if k == len(P)-1:
+            print("match a " + str(i - k))
+            k = pi[k]
+
+matching("ABC ABCDAB ABCDABCDABDE","ABCDABD",preprocessing("ABCDABD",len("ABCDABD")))
+    

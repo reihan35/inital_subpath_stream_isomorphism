@@ -200,17 +200,17 @@ def preprocessing(E,T):
         pi.append(-2)
     k = -2
     for i in range (1,T):
-        print("k " + str(k))
-        print("i " + str(i))
-        print("E[k+1]" + str(E[k+1]))
-        print("E[i]" + str(E[i]))
-        print("Pi avant " + str(pi))
+        #print("k " + str(k))
+        #print("i " + str(i))
+        #print("E[k+1]" + str(E[k+1]))
+        #print("E[i]" + str(E[i]))
+        #print("Pi avant " + str(pi))
         while k >= -1 and graphsequal(E[k+1],E[i]) == False:
             k=pi[k]
-            print("dans la boucle = " + str(k))
+          #  print("dans la boucle = " + str(k))
         k = k+1
         pi[i] = k
-        print("Pi apres " + str(pi))
+        #print("Pi apres " + str(pi))
     pi[0] = -1
 
     return pi
@@ -219,30 +219,30 @@ def preprocessing(E,T):
 def path_stream_matching(E,T,Eprim,Tprim,Vprim):
     pi = preprocessing(E,T)
     #pi = [0,0]
-    #print(pi)
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!PI EGALE" + str(pi))
     k = 0
     i = 0
     result = []
     mapi = dict()
     for t in range(0,Tprim):
-        #print("Eprim " + str(Eprim[t]))
-        #print("E " + str(E[t]))
-        mapi = find_pattern(Eprim[t],E[t],Vprim,mapi)
-        #print("mapi vaut " + str(mapi))
+        print("Eprim " + str(Eprim[t]))
+        print("E " + str(E[k+1]))
+        mapi = find_pattern(Eprim[t],E[k+1],Vprim,mapi)
+        print("mapi vaut " + str(mapi))
         while k>=0 and mapi == {}:
             k = pi[k]
         k = k + 1
-        #print("k VAUUUTT " + str(k))
-        if k == T :
+        print("k VAUUUTT " + str(k))
+        if k == T-1 :
             k = pi[k-1]
-            result.append((t,mapi))
+            result.append((t-T,mapi))
     return result
 
 example_target = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target.txt"),4)
 example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern.txt"),4)
 
 
-print(example_pattern)
-print(preprocessing(example_pattern,7))
+#print(example_pattern)
+#print(preprocessing(example_pattern,7))
 
-#print(path_stream_matching(example_pattern,2,example_target,2,[0,1,2,3]))
+print(path_stream_matching(example_pattern,7,example_target,18,[0,1,2,3]))
