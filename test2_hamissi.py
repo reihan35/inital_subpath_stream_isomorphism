@@ -190,6 +190,7 @@ def find_pattern(gprim,g,Vprim,mapi):
             if (g_to_unique_path[i] not in mapi):
                 mapi[g_to_unique_path[i]] = potential_path1[i]
     
+    #The case we have found a path the not yet associated way
     if g_to_unique_path == None:
         g_to_paths = bfs(g,testing[0])
         g_to_unique_path = max((x) for x in g_to_paths)
@@ -265,8 +266,20 @@ def KMPSearch(E, Eprim,Vprim):
     return result
 
 
+def make_graph():
+    f = open("/home/fatemeh/Bureau/Stage/graphbinh.txt", "w")
+    for i in range(1, 1001):
+        f.write(str(i)+" 0 1\n")
+    f.close()
+    return f
+
+make_graph()
+
 example_target = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target.txt"),4)
 example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern.txt"),4)
 
+target_binh =  to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/graphbinh.txt"),2)
+pattern_binh =  to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/patternBinh.txt"),2)
 
-print(KMPSearch(example_pattern,example_target,[0,1,2,3]))
+print(KMPSearch(pattern_binh,target_binh,[0,1]))
+#print(KMPSearch(example_pattern,example_target,[0,1,2,3]))
