@@ -1,3 +1,4 @@
+import itertools
 from queue import Queue
 def file_to_graphs(file):
     f = open(file, "r")
@@ -80,7 +81,29 @@ def creat_all_mappings(E,Eprim,t):
     list_mappings = []
     for i in range (0,len(E)):
         list_mappings.append(creat_all_mappings_for_single_graph(Eprim[t+i],E[i]))
-    return list_mappings
+    
+    return  list(itertools.product(*list_mappings))
+    #return list_mappings
+
+def is_valid(mapping):
+    merged = mapping[0]
+    print(merged)
+    for x in enumerate(mapping):
+        merged_befor = merged.copy()
+        print("je suis x" + str(x))
+        merged.update(x[1])
+        print(merged)
+        for key in merged.keys():
+            if key in merged_befor.keys() and merged_befor[key] != merged[key]:
+                return False
+        values = merged.values()
+        
+        if len(set(values))!=len(values):
+            return False
+
+    return True
+        
+#print(is_valid(({0: 2, 1: 1, 2: 0}, {2: 0, 3: 6, 4: 5}, {4: 6, 5: 0})))
 
 def creat_all_mappings_for_single_graph(gprim,g):
     testing_gprim = []
@@ -132,12 +155,14 @@ def creat_all_mappings_for_single_graph(gprim,g):
 example_target = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/sample_target.txt"),9)
 example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/sample_pattern.txt"),6)
 
-print(creat_all_mappings(example_pattern,example_target,0))
+#print(creat_all_mappings(example_pattern,example_target,0))
 
-def naive_algo(E,Eprim,V):
-    for t in len(Eprim):
-        mappings = creat_all_mappings(E,Eprim,t)
-        for m in mappings:
-            if is_valid(m,Eprim[t],E[t]):
-                return (m,t)
-    return null
+def naive_algo(E,Eprim):
+    #for t in range (0,len(Eprim)):
+    mappings = creat_all_mappings(E,Eprim,0)
+    for m in mappings:
+        if is_valid(m):
+            return (m,0)
+    return -1
+
+print(naive_algo(example_pattern,example_target))
