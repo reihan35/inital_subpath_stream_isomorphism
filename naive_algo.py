@@ -1,5 +1,7 @@
 import itertools
 from queue import Queue
+import collections
+
 def file_to_graphs(file):
     f = open(file, "r")
     a = -1
@@ -85,25 +87,43 @@ def creat_all_mappings(E,Eprim,t):
     return  list(itertools.product(*list_mappings))
     #return list_mappings
 
-def is_valid(mapping):
-    merged = mapping[0]
-    print(merged)
-    for x in enumerate(mapping):
-        merged_befor = merged.copy()
-        print("je suis x" + str(x))
-        merged.update(x[1])
-        print(merged)
-        for key in merged.keys():
-            if key in merged_befor.keys() and merged_befor[key] != merged[key]:
-                return False
-        values = merged.values()
-        
-        if len(set(values))!=len(values):
-            return False
+def get_key(val,my_dict): 
+    for key, value in my_dict.items(): 
+         if val == value: 
+             return key 
+  
+    return "key doesn't exist"
 
-    return True
+def mergeDict(dict1, dict2):
+    dict3 = dict1.copy()
+    dict3.update(dict2)
+    for key in dict3.keys():
+        if key in dict2.keys() and key in dict1.keys():
+            if  dict1[key] != dict3[key]:
+                print("je rentre la")
+                return -1
+        values = dict3.values()
+        duplicates = [item for item, count in collections.Counter(values).items() if count > 1]
+        print("duplicaaaaatessss" + str(duplicates))
+        if duplicates != []:
+            #print("bah non je rentre la")
+            return -1
+
+    return dict3
+
+#print(mergeDict({0:2, 1:1, 2:0},{2:0, 4:5, 3:5}))
+#print(mergeDict(mergeDict({0:2, 1:1, 2:0},{2:0, 4:5, 3:6}),{4:5, 5:7}))
+
+
+def is_valid(mapping):
+    dict3 = mapping[0].copy()
+    for dict2 in enumerate(mapping):
+        print(dict3)
+        dict3 = mergeDict(dict3, dict2[1])
+    
+    return dict3
         
-#print(is_valid(({0: 2, 1: 1, 2: 0}, {2: 0, 3: 6, 4: 5}, {4: 6, 5: 0})))
+#print(is_valid(({0: 2, 1: 1, 2: 0}, {2: 0, 3: 6, 4: 5}, {4: 5, 5: 7})))
 
 def creat_all_mappings_for_single_graph(gprim,g):
     testing_gprim = []
@@ -160,9 +180,19 @@ example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage
 def naive_algo(E,Eprim):
     #for t in range (0,len(Eprim)):
     mappings = creat_all_mappings(E,Eprim,0)
+    print("C'EST LE DEBUT ICI")
+    print(mappings[8])
+    i = 0
     for m in mappings:
-        if is_valid(m):
-            return (m,0)
+        if(i==8):
+            print("YEEEEEEESSSSS on est arrive au bon truc !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print(m)
+        i=i+1
+        print("ON VA ANALYSER" + str(m))
+        merged = is_valid(m)
+        print("oui je suis la" + str(merged))
+        if merged!=-1:
+            return (merged,0)
     return -1
 
 print(naive_algo(example_pattern,example_target))
