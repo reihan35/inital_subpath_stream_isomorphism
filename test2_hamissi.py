@@ -309,6 +309,10 @@ def make_random_tree(nbr_vertices,nbr_vertices_per_tree):
     not_choosed.remove(first)
     nbr_children = l2[index]
     while len(not_choosed) > 0:
+        if len(not_choosed) == 1:
+            return l3
+        elif len(not_choosed) == 2:
+            nbr_children = 0
         if nbr_children == 0:
             choosed = random.choice(not_choosed)
             index = not_choosed.index(choosed)
@@ -322,10 +326,9 @@ def make_random_tree(nbr_vertices,nbr_vertices_per_tree):
             index = not_choosed.index(choosed)
             not_choosed.remove(choosed)
             print(str(first) + " " + str(choosed))
+            l3.append([first,choosed])
             first = choosed
             nbr_children = l2[index]
-            l3.append([first,choosed])
-
         elif nbr_children == 2 :
             choosed1 = random.choice(not_choosed)
             index1 = not_choosed.index(choosed1)
@@ -338,9 +341,9 @@ def make_random_tree(nbr_vertices,nbr_vertices_per_tree):
             print(str(first) + " " + str(choosed1))
             print(str(first) + " " + str(choosed2))
 
+
             l3.append([first,choosed1])
             l3.append([first,choosed2])
-
 
             if random.randint(0,1) == 0:
                 first = choosed1
@@ -360,11 +363,13 @@ def make_random_tree(nbr_vertices,nbr_vertices_per_tree):
 
 
 def make_uniform_target(nbr_vertices_per_instance,nbr_instance,nbr_vertices):
-    f = open("/home/fatemeh/Bureau/Stage/unifrom_pattern_"+str(nbr_instance)+"_"+ str(nbr_vertices_per_instance) +".txt", "w")
+    f = open("/home/fatemeh/Bureau/Stage/unifrom_target_"+str(nbr_instance)+"_"+ str(nbr_vertices_per_instance) +".txt", "w")
     for j in range(0,nbr_instance):
         l = make_random_tree(nbr_vertices,nbr_vertices_per_instance)
+        print("je suis la liste" + str(l))
         for i in l:
             f.write(str(j) + " " + str(i[0]) + " " + str(i[1]))
+            f.write("\n")
             
     f.close()
     return f
