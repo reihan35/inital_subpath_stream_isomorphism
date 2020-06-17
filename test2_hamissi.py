@@ -1,4 +1,6 @@
 from queue import Queue
+import random
+
 def file_to_graphs(file):
     f = open(file, "r")
     a = -1
@@ -265,21 +267,116 @@ def KMPSearch(E, Eprim,Vprim):
     
     return result
 
+def make_random_path(nbr_vertices,length):
+    l = random.sample(range(0,nbr_vertices), length)
+    print(l)
+    return l
+    '''
+    for i in range(len(l)):
+        if i!=len(l)-1:
+            print(str(l[i]) + " " + str(l[i+1]))'''
 
-def make_graph():
-    f = open("/home/fatemeh/Bureau/Stage/graphbinh.txt", "w")
-    for i in range(1, 1001):
-        f.write(str(i)+" 0 1\n")
+#make_random_path(4,4)
+
+def make_uniform_pattern(nbr_length_per_instance,nbr_instance,nbr_vertices):
+    f = open("/home/fatemeh/Bureau/Stage/unifrom_pattern_"+str(nbr_length_per_instance)+".txt", "w")
+    for j in range(0,nbr_instance):
+        l = make_random_path(nbr_vertices,nbr_length_per_instance)
+        for i in range(len(l)):
+            if i!=len(l)-1:
+                f.write(str(j) + " " + str(l[i]) + " " + str(l[i+1]))
+                f.write("\n")
     f.close()
     return f
 
-make_graph()
 
-example_target = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target.txt"),4)
-example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern.txt"),4)
+def make_random_tree(nbr_vertices,nbr_vertices_per_tree):
+    l = random.sample(range(0,nbr_vertices), nbr_vertices_per_tree)
+    l2 = []
+    print(l)
+    for i in range(len(l)):
+        l2.append(random.randint(1,2))
+    
+    print(l2)
+    not_choosed = l[:]
+    print("not choosed " + str(not_choosed))
 
-target_binh =  to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/graphbinh.txt"),2)
-pattern_binh =  to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/patternBinh.txt"),2)
+    l3 = []
 
-print(KMPSearch(pattern_binh,target_binh,[0,1]))
+    i = 0
+    first = random.choice(not_choosed)
+    index = not_choosed.index(first)
+    not_choosed.remove(first)
+    nbr_children = l2[index]
+    while len(not_choosed) > 0:
+        if nbr_children == 0:
+            choosed = random.choice(not_choosed)
+            index = not_choosed.index(choosed)
+            not_choosed.remove(choosed)
+            print(str(first) + " " + str(choosed))
+            l3.append([first,choosed])
+            first = choosed
+            nbr_children = l2[index]
+        elif nbr_children == 1 :
+            choosed = random.choice(not_choosed)
+            index = not_choosed.index(choosed)
+            not_choosed.remove(choosed)
+            print(str(first) + " " + str(choosed))
+            first = choosed
+            nbr_children = l2[index]
+            l3.append([first,choosed])
+
+        elif nbr_children == 2 :
+            choosed1 = random.choice(not_choosed)
+            index1 = not_choosed.index(choosed1)
+            not_choosed.remove(choosed1)
+
+            choosed2 = random.choice(not_choosed)
+            index2 = not_choosed.index(choosed2)
+            not_choosed.remove(choosed2)
+
+            print(str(first) + " " + str(choosed1))
+            print(str(first) + " " + str(choosed2))
+
+            l3.append([first,choosed1])
+            l3.append([first,choosed2])
+
+
+            if random.randint(0,1) == 0:
+                first = choosed1
+                nbr_children = l2[index1]
+            else:
+                first = choosed2
+                nbr_children = l2[index2]
+        print(not_choosed)
+    return l3
+
+#print(make_random_tree(10,7))
+
+'''
+    for i in range(len(l)):
+        if i!=len(l)-1:
+            print(str(l[i]) + " " + str(l[i+1]))'''
+
+
+def make_uniform_target(nbr_vertices_per_instance,nbr_instance,nbr_vertices):
+    f = open("/home/fatemeh/Bureau/Stage/unifrom_pattern_"+str(nbr_instance)+"_"+ str(nbr_vertices_per_instance) +".txt", "w")
+    for j in range(0,nbr_instance):
+        l = make_random_tree(nbr_vertices,nbr_vertices_per_instance)
+        for i in l:
+            f.write(str(j) + " " + str(i[0]) + " " + str(i[1]))
+            
+    f.close()
+    return f
+
+#make_uniform_pattern(2,2,10)
+make_uniform_target(10,10,20)
+
+#example_target = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target.txt"),4)
+#example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern.txt"),4)
+
+#target_binh =  to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/graphbinh.txt"),2)
+#pattern_binh =  to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/patternBinh.txt"),2)
+
+#print(KMPSearch(pattern_binh,target_binh,[0,1]))
 #print(KMPSearch(example_pattern,example_target,[0,1,2,3]))
