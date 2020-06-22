@@ -1,6 +1,37 @@
 from queue import Queue
 import random
 
+def make_binary_tree_form_arbogen(trees,n,file_name):
+    f2 = open(file_name, "w")
+    for fname in trees:
+        f = open(fname, "r")
+        fi = f.readline()
+        fi = f.readline()
+        i = 0
+        while fi[0]==" ":
+            fi = f.readline()
+            i=i+1
+        line = fi.split()
+        last = line[2]
+        last1 = last[:len(last)-1]
+        f2.write(str(trees.index(fname)) + " " + str(line[0]) + " " + str(last1))
+        f2.write("\n") 
+        for j in range(0,i-2):
+            fi = f.readline()
+            line = fi.split()
+            last = line[2]
+            last1 = last[:len(last)-1]
+            f2.write(str(trees.index(fname)) + " " + str(line[0]) + " " + str(last1))
+            f2.write("\n")    
+    
+    f2.close()
+    return f2
+
+            
+
+make_binary_tree_form_arbogen(["/home/fatemeh/Bureau/Stage/arbre.dot",""],1,"zzzzzzzzzzzz.txt")
+
+            
 def file_to_graphs(file):
     f = open(file, "r")
     a = -1
@@ -279,7 +310,7 @@ def make_random_path(nbr_vertices,length):
 #make_random_path(4,4)
 
 def make_uniform_pattern(nbr_length_per_instance,nbr_instance,nbr_vertices):
-    f = open("/home/fatemeh/Bureau/Stage/unifrom_pattern_"+str(nbr_length_per_instance)+".txt", "w")
+    f = open("/home/fatemeh/Bureau/Stage/data/unifrom_pattern_"+str(nbr_length_per_instance)+"_"+ str(nbr_instance) + ".txt", "w")
     for j in range(0,nbr_instance):
         l = make_random_path(nbr_vertices,nbr_length_per_instance)
         for i in range(len(l)):
@@ -363,7 +394,7 @@ def make_random_tree(nbr_vertices,nbr_vertices_per_tree):
 
 
 def make_uniform_target(nbr_vertices_per_instance,nbr_instance,nbr_vertices):
-    f = open("/home/fatemeh/Bureau/Stage/unifrom_target_"+str(nbr_instance)+"_"+ str(nbr_vertices_per_instance) +".txt", "w")
+    f = open("/home/fatemeh/Bureau/Stage/data/uniform_target_"+str(nbr_instance)+"_"+ str(nbr_vertices_per_instance) +".txt", "w")
     for j in range(0,nbr_instance):
         l = make_random_tree(nbr_vertices,nbr_vertices_per_instance)
         print("je suis la liste" + str(l))
@@ -374,8 +405,8 @@ def make_uniform_target(nbr_vertices_per_instance,nbr_instance,nbr_vertices):
     f.close()
     return f
 
-#make_uniform_pattern(2,2,10)
-make_uniform_target(10,10,20)
+#make_uniform_pattern(20,5,30)
+#make_uniform_target(40,10,100)
 
 #example_target = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target.txt"),4)
 #example_pattern = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern.txt"),4)

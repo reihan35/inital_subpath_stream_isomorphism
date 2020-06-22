@@ -2,6 +2,8 @@ import itertools
 from queue import Queue
 import collections
 import sys, getopt
+import timeit
+
 
 #parses file to list of edges per graph
 def file_to_graphs(file):
@@ -90,6 +92,7 @@ def bfs(gprim,start):
 def creat_all_mappings(E,Eprim,t):
     list_mappings = []
     for i in range (0,len(E)):
+        print("je rentre ici")
         list_mappings.append(creat_all_mappings_for_single_graph(Eprim[t+i],E[i]))
     
     return  list(itertools.product(*list_mappings))
@@ -120,6 +123,8 @@ def mergeDict(dict1, dict2):
 
 #generalizes the function before for all instances
 def is_valid(mapping):
+    print("je rentre iciiii")
+    print(mapping)
     dict3 = mapping[0].copy()
     for dict2 in enumerate(mapping):
         dict3 = mergeDict(dict3, dict2[1])
@@ -197,11 +202,14 @@ example_pattern_2 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Sta
 example_target_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target3.txt"),5)
 example_pattern_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern3.txt"),5)
 
-example_target_4 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/data/target_4_10.txt"),12)
-example_pattern_4 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/data/unifrom_pattern_2.txt"),10)
+example_target_4 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/data/uniform_target_10_40.txt"),100)
+example_pattern_4 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/data/unifrom_pattern_20_5.txt"),30)
 
 
+start = timeit.default_timer()
 print(naive_algo(example_pattern_4,example_target_4))
+stop = timeit.default_timer()
+print('Time: ', stop - start)  
 
 
 '''
