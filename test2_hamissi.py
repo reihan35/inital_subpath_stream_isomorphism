@@ -1,8 +1,9 @@
 from queue import Queue
+import numpy as np
 import random
 import os
 import os.path
-
+import matplotlib.pyplot as plt
 
 def make_binary_tree_form_arbogen(trees,n,file_name):
     f2 = open(file_name, "w")
@@ -124,7 +125,7 @@ def bfs(gprim,start):
     
     return all_paths
 
-
+"""
 def shrink_paths(paths,n):
     maxList = max((x) for x in paths) 
     if len(maxList) != n :
@@ -430,4 +431,4 @@ def make_uniform_target(nbr_vertices_per_instance,nbr_instance,nbr_vertices):
 #pattern_binh =  to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/patternBinh.txt"),2)
 
 #print(KMPSearch(pattern_binh,target_binh,[0,1]))
-#print(KMPSearch(example_pattern,example_target,[0,1,2,3]))
+#print(KMPSearch(example_pattern,example_target,[0,1,2,3]))"""
