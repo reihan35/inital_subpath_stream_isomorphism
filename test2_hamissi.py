@@ -1,5 +1,8 @@
 from queue import Queue
 import random
+import os
+import os.path
+
 
 def make_binary_tree_form_arbogen(trees,n,file_name):
     f2 = open(file_name, "w")
@@ -27,11 +30,23 @@ def make_binary_tree_form_arbogen(trees,n,file_name):
     f2.close()
     return f2
 
-            
+def generate_random_target_stream(number_of_vertex_per_instance,number_of_instances,file_name):
+    l = []
+    for i in range(number_of_instances+1):
+        while True:  
+            os.system('arbogen -o ~/Bureau/Stage/arbre'+ str(number_of_vertex_per_instance) + '_' + str(i) +' -otype dot ~/arbogen-master/examples/binary'+str(number_of_vertex_per_instance)+'.spec')
+            f =  'arbre' + str(number_of_vertex_per_instance) + '_' + str(i) + '.dot'
+            if(os.path.exists(os.path.join('/home/fatemeh/Bureau/Stage/', f))):  
+               break  
+        l.append('/home/fatemeh/Bureau/Stage/'+f)
+    r = make_binary_tree_form_arbogen(l,number_of_instances,file_name)
+    print("Done ! target stream created.")
+    return r
 
-make_binary_tree_form_arbogen(["/home/fatemeh/Bureau/Stage/arbre.dot",""],1,"zzzzzzzzzzzz.txt")
+generate_random_target_stream(1000,100,"/home/fatemeh/Bureau/Stage/target_100inst_1000vert.txt")
+# make_binary_tree_form_arbogen(["/home/fatemeh/Bureau/Stage/arbre.dot"],1,"target_1000.txt")
+#print(os.path.exists(os.path.join('/home/fatemeh/Bureau/Stage/', 'arbre' + str(1000) + '_' + str(0) + '.dot')))    
 
-            
 def file_to_graphs(file):
     f = open(file, "r")
     a = -1
