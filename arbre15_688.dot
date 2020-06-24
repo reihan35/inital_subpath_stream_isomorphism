@@ -1,0 +1,35 @@
+digraph {
+  16 [shape=point];
+  8 [shape=point];
+  6 [shape=point];
+  4 [shape=point];
+  2 [shape=point];
+  0 [shape=point];
+  1 [shape=point];
+  3 [shape=point];
+  5 [shape=point];
+  7 [shape=point];
+  15 [shape=point];
+  14 [shape=point];
+  13 [shape=point];
+  9 [shape=point];
+  12 [shape=point];
+  11 [shape=point];
+  10 [shape=point];
+16 -> 8;
+8 -> 6;
+6 -> 4;
+4 -> 2;
+2 -> 0;
+2 -> 1;
+4 -> 3;
+6 -> 5;
+8 -> 7;
+16 -> 15;
+15 -> 14;
+14 -> 13;
+13 -> 9;
+13 -> 12;
+12 -> 11;
+11 -> 10;
+}

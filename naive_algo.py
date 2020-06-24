@@ -3,7 +3,73 @@ from queue import Queue
 import collections
 import sys, getopt
 import timeit
+import numpy as np
+import random
+import os
+import os.path
+import matplotlib.pyplot as plt
 
+def make_random_path(nbr_vertices,length):
+    l = random.sample(range(0,nbr_vertices), length)
+    print(l)
+    return l
+    '''
+    for i in range(len(l)):
+        if i!=len(l)-1:
+            print(str(l[i]) + " " + str(l[i+1]))'''
+
+#make_random_path(4,4)
+
+def generate_uniform_pattern(nbr_length_per_instance,nbr_instance,nbr_vertices):
+    f = open("/home/fatemeh/Bureau/Stage/pattern_"+ str(nbr_instance) +"inst_"+ str(nbr_length_per_instance)+"vert.txt", "w")
+    for j in range(1,(nbr_instance+1)):
+        l = make_random_path(nbr_vertices,nbr_length_per_instance)
+        for i in range(len(l)):
+            if i!=len(l)-1:
+                f.write(str(j) + " " + str(l[i]) + " " + str(l[i+1]))
+                f.write("\n")
+    f.close()
+    return f
+
+
+def make_binary_tree_form_arbogen(trees,n,file_name):
+    f2 = open(file_name, "w")
+    for fname in trees:
+        f = open(fname, "r")
+        fi = f.readline()
+        fi = f.readline()
+        i = 0
+        while fi[0]==" ":
+            fi = f.readline()
+            i=i+1
+        line = fi.split()
+        last = line[2]
+        last1 = last[:len(last)-1]
+        f2.write(str(trees.index(fname)+1) + " " + str(line[0]) + " " + str(last1))
+        f2.write("\n") 
+        for j in range(0,i-2):
+            fi = f.readline()
+            line = fi.split()
+            last = line[2]
+            last1 = last[:len(last)-1]
+            f2.write(str(trees.index(fname)+1) + " " + str(line[0]) + " " + str(last1))
+            f2.write("\n")    
+    
+    f2.close()
+    return f2
+
+def generate_random_target_stream(number_of_vertex_per_instance,number_of_instances):
+    l = []
+    for i in range(number_of_instances+1):
+        while True:  
+            os.system('arbogen -o ~/Bureau/Stage/arbre'+ str(number_of_vertex_per_instance) + '_' + str(i) +' -otype dot ~/arbogen-master/examples/unarybinary'+str(number_of_vertex_per_instance)+'.spec')
+            f =  'arbre' + str(number_of_vertex_per_instance) + '_' + str(i) + '.dot'
+            if(os.path.exists(os.path.join('/home/fatemeh/Bureau/Stage/', f))):  
+               break  
+        l.append('/home/fatemeh/Bureau/Stage/'+f)
+    r = make_binary_tree_form_arbogen(l,number_of_instances,"/home/fatemeh/Bureau/Stage/target_"+ str(number_of_instances) +"inst_"+ str(number_of_vertex_per_instance)+"vert.txt")
+    print("Done ! target stream created.")
+    return r
 
 #parses file to list of edges per graph
 def file_to_graphs(file):
@@ -92,7 +158,6 @@ def bfs(gprim,start):
 def creat_all_mappings(E,Eprim,t):
     list_mappings = []
     for i in range (0,len(E)):
-        print("je rentre ici")
         list_mappings.append(creat_all_mappings_for_single_graph(Eprim[t+i],E[i]))
     
     return  list(itertools.product(*list_mappings))
@@ -123,8 +188,6 @@ def mergeDict(dict1, dict2):
 
 #generalizes the function before for all instances
 def is_valid(mapping):
-    print("je rentre iciiii")
-    print(mapping)
     dict3 = mapping[0].copy()
     for dict2 in enumerate(mapping):
         dict3 = mergeDict(dict3, dict2[1])
@@ -187,7 +250,7 @@ def naive_algo(E,Eprim):
         for m in mappings:
             merged = is_valid(m)
             if merged!=-1:
-                print("Found isomorphism with mapping " + str(merged) + " at instance " + str(t+1) + " of the pattern.")
+                print("Found isomorphism with mapping " + str(merged) + " at instance " + str(t+1) + " of the target.")
                 return (merged,t+1)
     
     print("No possible isomorphism")
@@ -205,9 +268,14 @@ example_pattern_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Sta
 example_target_4 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/data/target_1000.txt"),2000)
 example_pattern_4 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern2.txt"),8)
 
+generate_random_target_stream(15,1000)
+generate_uniform_pattern(5,2,10)
+
+example_target_5 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target_1000inst_15vert.txt"),25)
+example_pattern_5 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/pattern_2inst_5vert.txt"),10)
 
 start = timeit.default_timer()
-print(naive_algo(example_pattern_4,example_target_4))
+print(naive_algo(example_pattern_5,example_target_5))
 stop = timeit.default_timer()
 print('Time: ', stop - start)  
 

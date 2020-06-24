@@ -5,6 +5,30 @@ import os
 import os.path
 import matplotlib.pyplot as plt
 
+
+def make_random_path(nbr_vertices,length):
+    l = random.sample(range(0,nbr_vertices), length)
+    print(l)
+    return l
+    '''
+    for i in range(len(l)):
+        if i!=len(l)-1:
+            print(str(l[i]) + " " + str(l[i+1]))'''
+
+#make_random_path(4,4)
+
+def make_uniform_pattern(nbr_length_per_instance,nbr_instance,nbr_vertices):
+    f = open("/home/fatemeh/Bureau/Stage/data/unifrom_pattern_"+str(nbr_length_per_instance)+"_"+ str(nbr_instance) + ".txt", "w")
+    for j in range(0,nbr_instance):
+        l = make_random_path(nbr_vertices,nbr_length_per_instance)
+        for i in range(len(l)):
+            if i!=len(l)-1:
+                f.write(str(j) + " " + str(l[i]) + " " + str(l[i+1]))
+                f.write("\n")
+    f.close()
+    return f
+
+
 def make_binary_tree_form_arbogen(trees,n,file_name):
     f2 = open(file_name, "w")
     for fname in trees:
