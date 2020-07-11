@@ -86,6 +86,7 @@ def file_to_graphs(file):
             edges = []
             edges.append(data[1:])
             graphs.append(edges)
+        a = data[0]
     return graphs
 
 #print(file_to_graphs("/home/fatemeh/Bureau/Stage/graph.txt"))
@@ -207,6 +208,9 @@ def creat_all_mappings_for_single_graph(gprim,g):
     testing_g = []
     list_mappis = []
     paths_in_gprim = []
+    print("je suis laaaaaaaa")
+    print(gprim)
+    print(g)
 
     for i in range(len(gprim)):
         for j in range(len(gprim)) :
@@ -242,6 +246,7 @@ def creat_all_mappings_for_single_graph(gprim,g):
             mapi[g_to_path_side_1[i]] = p[i]
         list_mappis.append(mapi)
     
+    print("je suis la liste des mappies" + str(list_mappis))
     return list_mappis
 
 #print(creat_all_mappings_for_single_graph([[0,1,1,0,0],[1,0,0,1,1],[1,0,0,0,0],[0,1,0,0,0],[0,1,0,0,0]],[[0,1,0],[1,0,1],[0,1,0]]))
@@ -271,21 +276,16 @@ x1 = [5, 10, 15, 20, 30]
 y1 = [7.82, 307.81283,  144.733283043, 18.3932094,  6.54 ]
 y2 = [10.92, 693.34, 304.47,36.03, 9.23]
 y3 = [6.027, 1000,1000,1000, 177.64]
-
-
 plt.plot(x1, y1, label = "Target with 50 instances")
 plt.plot(x1, y2, label = "Target with 100 instances")
 plt.plot(x1, y3, label = "Target with 1000 instances")
 plt.xlabel('Pattern length')
 plt.ylabel('Execution time (seconds)')
-
 plt.ylim((25,800))
 plt.legend()
-
-
 plt.show()
-'''
-'''
+
+
 x1 = [5, 10, 15, 20, 30]
 y1 = [4.48, 1507.1912,  2200.033, 3000, 3000 ]
 y2 = [24.14, 3000, 3000,3000, 3000]
@@ -303,8 +303,8 @@ plt.ylim((25,2300))
 plt.legend()
 
 
-plt.show()
-'''
+plt.show()'''
+
 example_target_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target1.txt"),9)
 example_pattern_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern1.txt"),6)
 
@@ -362,7 +362,6 @@ def computeLPSArray(E, T, lps):
             else: 
                 lps[i] = 0
                 i += 1
-
 def KMPSearch(E, Eprim,Vprim): 
     M = len(E) 
     N = len(Eprim) 
@@ -386,7 +385,6 @@ def KMPSearch(E, Eprim,Vprim):
             print "Found pattern at index " + str(i-j) 
             j = lps[j-1] 
             i = i + 1
-
         # mismatch after j matches 
         elif i < N and j < M: 
             # Do not match lps[0..lps[j-1]] characters, 

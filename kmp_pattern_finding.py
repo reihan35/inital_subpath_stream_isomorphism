@@ -203,22 +203,29 @@ def deep_list(x):
 
 
 
-def is_valid(mapping):
+def is_valid(mapping,first):
+    print("first" + str(first))
     result = deep_list(mapping)
-    result[0].append(result[len(result)-1])
-    print("new_r" + str(result[0]))
-    dict3 = result[0][0].copy()
-    for dict2 in result[0]:
-        dict3 = mergeDict(dict3, dict2)
-        if(dict3 == -1):
-            return -1
+    if (first==1):
+        dict3 = result[0].copy()
+        for dict2 in result:
+            dict3 = mergeDict(dict3, dict2)
+            if(dict3 == -1):
+                return -1
+    else:
+        result[0].append(result[len(result)-1])
+        dict3 = result[0][0].copy()
+        for dict2 in result[0]:
+            dict3 = mergeDict(dict3, dict2)
+            if(dict3 == -1):
+                return -1
     
     return dict3
 
-def clean_mappings(mappings):
+def clean_mappings(mappings,first):
     new_mappings = []
     for mapping in mappings:
-        m = is_valid(mapping)
+        m = is_valid(mapping,first)
         if m != -1:
             new_mappings.append(m)
     return new_mappings
@@ -231,6 +238,9 @@ def creat_all_mappings_for_single_graph(gprim,g):
     testing_g = []
     list_mappis = []
     paths_in_gprim = []
+    print("je suis laaaaaaaa")
+    print(gprim)
+    print(g)
 
     for i in range(len(gprim)):
         for j in range(len(gprim)) :
@@ -263,6 +273,7 @@ def creat_all_mappings_for_single_graph(gprim,g):
             mapi[g_to_path_side_1[i]] = p[i]
         list_mappis.append(mapi)
     
+    print("je suis la liste des mappis" + str(list_mappis))
     return list_mappis
 
 #print(creat_all_mappings_for_single_graph([[0,1,1,0,0],[1,0,0,1,1],[1,0,0,0,0],[0,1,0,0,0],[0,1,0,0,0]],[[0,1,0],[1,0,1],[0,1,0]]))
@@ -298,6 +309,7 @@ def algo_back_track(G_i,G_prim_i):
     mappings = creat_all_mappings_for_single_graph(G_prim_i,G_i)
     if mappings != []:
         return mappings
+   
 '''
 all_mappings = []
 mapping = algo_back_track([[0,1,0,0,0],[1,0,1,0,0],[0,1,0,0,0]],[[0,1,0,0,1],[1,0,1,1,0],[0,1,0,0,0],[0,1,0,0,0],[1,0,0,0,0]])
@@ -337,25 +349,39 @@ def KMPSearch(E, Eprim):
   
     i = 0 # index for txt[] 
     while i < N: 
-        mapping = algo_back_track(Eprim[i],E[j])
-        all_mappings.append(mapping)
-        all_mappings = list(itertools.product(*all_mappings))
-        all_mappings_cleared = clean_mappings(all_mappings)
-        if (all_mappings_cleared!=[]):
+        mapping = creat_all_mappings_for_single_graph(Eprim[i],E[j])
+        print("voici mapping" + str(mapping))
+        if (i==0):
+            print("voici i " + str(i))
+            all_mappings = [mapping]
+            print(all_mappings)
+        if(i>0):
+            print("voici i " + str(i))
+            print("voici j " + str(j))
+            all_mappings.append(mapping)
+            print("all_mappings" + str(all_mappings))
+            all_mappings = list(itertools.product(*all_mappings))
+            all_mappings = clean_mappings(all_mappings,i)
+            print("all_mappings 2" + str(all_mappings))
+        
+        if (all_mappings!=[]):
+            print("je rentre PASSSSS ICIIIIIIIIIIIIIII")
             j = j + 1; 
             i = i + 1; 
+            print(j)
          
         if j == M: 
-            result.append(((i-j),all_mappings_cleared))
+            result.append(((i-j),all_mappings))
             print "Found pattern at index " + str(i-j) 
             j = lps[j-1] 
             i = i + 1
 
         # mismatch after j matches 
-        elif i < N and j < M: 
+        elif i < N and all_mappings==[]: 
             # Do not match lps[0..lps[j-1]] characters, 
             # they will match anyway 
             if j != 0: 
+                print("je tombe iciiiiiiiiiiii ")
                 j = lps[j-1] 
             else: 
                 i += 1
