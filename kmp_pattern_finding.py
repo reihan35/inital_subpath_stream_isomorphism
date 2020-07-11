@@ -298,19 +298,20 @@ def algo_back_track(G_i,G_prim_i):
     mappings = creat_all_mappings_for_single_graph(G_prim_i,G_i)
     if mappings != []:
         return mappings
-
+'''
 all_mappings = []
-mapping = algo_back_track([[0,1,0],[1,0,1],[0,1,0]],[[0,1,0,0,1],[1,0,1,1,0],[0,1,0,0,0],[0,1,0,0,0],[1,0,0,0,0]])
+mapping = algo_back_track([[0,1,0,0,0],[1,0,1,0,0],[0,1,0,0,0]],[[0,1,0,0,1],[1,0,1,1,0],[0,1,0,0,0],[0,1,0,0,0],[1,0,0,0,0]])
 print(mapping)
 all_mappings.append(mapping)
 #all_mappings = list(itertools.product(*all_mappings))
 print(all_mappings)
-mapping = algo_back_track([[0,1],[1,0]],[[0,1,0,0],[0,0,1,1],[0,1,0,0],[0,1,0,0]])
+mapping = algo_back_track([[0,0,0,0,1],[0,0,0,0,1,0]],[[0,1,0,0,0],[0,0,1,1,0],[0,1,0,0,0],[0,1,0,0,0]])
 print(mapping)
 all_mappings.append(mapping)
 all_mappings = list(itertools.product(*all_mappings))
 print(all_mappings)
-#print(clean_mappings(all_mappings))
+print(clean_mappings(all_mappings))
+
 mapping = algo_back_track([[0,1,0],[1,0,1],[0,1,0]],[[0,1,0],[1,0,1],[0,1,0]])
 all_mappings = [all_mappings]
 all_mappings.append(mapping)
@@ -318,9 +319,9 @@ all_mappings = list(itertools.product(*all_mappings))
 print(all_mappings)
 print(clean_mappings(all_mappings))
 
-
 '''
-def KMPSearch(E, Eprim,Vprim): 
+
+def KMPSearch(E, Eprim): 
     M = len(E) 
     N = len(Eprim) 
     result = []
@@ -337,13 +338,15 @@ def KMPSearch(E, Eprim,Vprim):
     i = 0 # index for txt[] 
     while i < N: 
         mapping = algo_back_track(Eprim[i],E[j])
-        all_mappings = list(itertools.product(*all_mappings.append(mapping)))
-        if (clean_mappings(all_mappings)):
+        all_mappings.append(mapping)
+        all_mappings = list(itertools.product(*all_mappings))
+        all_mappings_cleared = clean_mappings(all_mappings)
+        if (all_mappings_cleared!=[]):
             j = j + 1; 
             i = i + 1; 
          
         if j == M: 
-            result.append(((i-j),mapi))
+            result.append(((i-j),all_mappings_cleared))
             print "Found pattern at index " + str(i-j) 
             j = lps[j-1] 
             i = i + 1
@@ -357,4 +360,10 @@ def KMPSearch(E, Eprim,Vprim):
             else: 
                 i += 1
     
-    return result'''
+    return result
+
+example_target_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target1.txt"),9)
+example_pattern_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern1.txt"),6)
+
+
+print(KMPSearch(example_pattern_1, example_target_1))
