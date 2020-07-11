@@ -10,6 +10,7 @@ import os.path
 import matplotlib.pyplot as plt
 import math
 
+
 def make_random_path(nbr_vertices,length):
     l = random.sample(range(0,nbr_vertices), length)
     print(l)
@@ -175,6 +176,8 @@ def get_key(val,my_dict):
 #merges each mapping into one and checks if the mapping is valid by comparing it before and after for repeated keys and values
 def mergeDict(dict1, dict2):
     dict3 = dict1.copy()
+    print(dict3)
+    print(dict2)
     dict3.update(dict2)
     for key in dict3.keys():
         if key in dict2.keys() and key in dict1.keys():
@@ -191,15 +194,33 @@ def mergeDict(dict1, dict2):
 #print(mergeDict(mergeDict({0:2, 1:1, 2:0},{2:0, 4:5, 3:6}),{4:5, 5:7}))
 
 #generalizes the function before for all instances
+def deep_list(x):
+    """fully copies trees of tuples to a tree of lists.
+       deep_list( (1,2,(3,4)) ) returns [1,2,[3,4]]"""
+    if type(x)!=type( () ):
+        return x
+    return map(deep_list,x)
+
+
+
 def is_valid(mapping):
-    dict3 = mapping[0].copy()
-    for dict2 in enumerate(mapping):
-        dict3 = mergeDict(dict3, dict2[1])
+    result = deep_list(mapping)
+    result[0].append(result[len(result)-1])
+    print("new_r" + str(result[0]))
+    dict3 = result[0][0].copy()
+    for dict2 in result[0]:
+        dict3 = mergeDict(dict3, dict2)
         if(dict3 == -1):
             return -1
     
     return dict3
-        
+
+def clean_mappings(mappings):
+    for mapping in mappings:
+        if is_valid(mapping)==False:
+            mappings.remove(mapping)
+    print(mappings)
+
 #print(is_valid(({0: 2, 1: 1, 2: 0}, {2: 0, 3: 6, 4: 5}, {4: 5, 5: 7})))
 
 #Calculates all possible isomorphism by finding paths of desired length all over the graph at the instance
@@ -227,9 +248,6 @@ def creat_all_mappings_for_single_graph(gprim,g):
     for v in testing_gprim:
        for chemin in (bfs(gprim,v)):
             paths_in_gprim.append(chemin)
-    
-    print("taille du taget" + str(len(testing_gprim)))
-    print("taille du path" + str(len(testing_g)))
 
     potential_paths = []
     for p in paths_in_gprim:
@@ -248,36 +266,63 @@ def creat_all_mappings_for_single_graph(gprim,g):
 #print(creat_all_mappings_for_single_graph([[0,1,1,0,0],[1,0,0,1,1],[1,0,0,0,0],[0,1,0,0,0],[0,1,0,0,0]],[[0,1,0],[1,0,1],[0,1,0]]))
 #print(creat_all_mappings(example_pattern,example_target,0))
 
-'''
+
+
 def computeLPSArray(E, T, lps): 
-    len = 0 # length of the previous longest prefix suffix 
+    leni = 0 # length of the previous longest prefix suffix 
   
     lps[0] # lps[0] is always 0 
     i = 1
   
     # the loop calculates lps[i] for i = 1 to M-1 
     while i < T: 
-        if graphsequal(E[i],E[len]): 
-            len += 1
-            lps[i] = len
+        if len(E[i])==len(E[leni]): 
+            leni += 1
+            lps[i] = leni
             i += 1
         else: 
             # This is tricky. Consider the example. 
             # AAACAAAA and i = 7. The idea is similar  
             # to search step. 
-            if len != 0: 
-                len = lps[len-1] 
+            if leni != 0: 
+                leni = lps[leni-1] 
   
                 # Also, note that we do not increment i here 
             else: 
                 lps[i] = 0
                 i += 1
 
+def algo_back_track(G_i,G_prim_i):
+    mappings = creat_all_mappings_for_single_graph(G_prim_i,G_i)
+    if mappings != []:
+        return mappings
+
+all_mappings = []
+mapping = algo_back_track([[0,1,0],[1,0,1],[0,1,0]],[[0,1,0,0,1],[1,0,1,1,0],[0,1,0,0,0],[0,1,0,0,0],[1,0,0,0,0]])
+print(mapping)
+all_mappings.append(mapping)
+#all_mappings = list(itertools.product(*all_mappings))
+print(all_mappings)
+mapping = algo_back_track([[0,1],[1,0]],[[0,1,0,0],[0,0,1,1],[0,1,0,0],[0,1,0,0]])
+print(mapping)
+all_mappings.append(mapping)
+all_mappings = list(itertools.product(*all_mappings))
+print(all_mappings)
+#print(clean_mappings(all_mappings))
+mapping = algo_back_track([[0,1,0],[1,0,1],[0,1,0]],[[0,1,0],[1,0,1],[0,1,0]])
+all_mappings = [all_mappings]
+all_mappings.append(mapping)
+all_mappings = list(itertools.product(*all_mappings))
+print(all_mappings)
+print(clean_mappings(all_mappings))
+
+
+'''
 def KMPSearch(E, Eprim,Vprim): 
     M = len(E) 
     N = len(Eprim) 
     result = []
-    mapi = dict()
+    all_mappings = []
   
     # create lps[] that will hold the longest prefix suffix  
     # values for pattern 
@@ -289,10 +334,14 @@ def KMPSearch(E, Eprim,Vprim):
   
     i = 0 # index for txt[] 
     while i < N: 
-        (j,mapi) = naive_algo(Eprim[i],E[j],i)
+        mapping = algo_back_track(Eprim[i],E[j])
+        all_mappings = list(itertools.product(*all_mappings.append(mapping)))
+        if (clean_mappings(all_mappings)):
+            j = j + 1; 
+            i = i + 1; 
+         
         if j == M: 
             result.append(((i-j),mapi))
-            print(str(Eprim[i-j]))
             print "Found pattern at index " + str(i-j) 
             j = lps[j-1] 
             i = i + 1
@@ -306,5 +355,4 @@ def KMPSearch(E, Eprim,Vprim):
             else: 
                 i += 1
     
-    return result
-'''
+    return result'''
