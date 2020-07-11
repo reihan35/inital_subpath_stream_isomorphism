@@ -216,10 +216,12 @@ def is_valid(mapping):
     return dict3
 
 def clean_mappings(mappings):
+    new_mappings = []
     for mapping in mappings:
-        if is_valid(mapping)==False:
-            mappings.remove(mapping)
-    print(mappings)
+        m = is_valid(mapping)
+        if m != -1:
+            new_mappings.append(m)
+    return new_mappings
 
 #print(is_valid(({0: 2, 1: 1, 2: 0}, {2: 0, 3: 6, 4: 5}, {4: 5, 5: 7})))
 
