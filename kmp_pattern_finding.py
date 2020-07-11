@@ -205,20 +205,21 @@ def deep_list(x):
 
 def is_valid(mapping,first):
     print("first" + str(first))
+    print(mapping)
     result = deep_list(mapping)
-    if (first==1):
-        dict3 = result[0].copy()
-        for dict2 in result:
-            dict3 = mergeDict(dict3, dict2)
-            if(dict3 == -1):
-                return -1
-    else:
+    #if (first==1):
+    dict3 = result[0].copy()
+    for dict2 in result:
+        dict3 = mergeDict(dict3, dict2)
+        if(dict3 == -1):
+            return -1
+    '''else:
         result[0].append(result[len(result)-1])
         dict3 = result[0][0].copy()
         for dict2 in result[0]:
             dict3 = mergeDict(dict3, dict2)
             if(dict3 == -1):
-                return -1
+                return -1'''
     
     return dict3
 
@@ -228,7 +229,7 @@ def clean_mappings(mappings,first):
         m = is_valid(mapping,first)
         if m != -1:
             new_mappings.append(m)
-    return new_mappings
+    return [new_mappings]
 
 #print(is_valid(({0: 2, 1: 1, 2: 0}, {2: 0, 3: 6, 4: 5}, {4: 5, 5: 7})))
 
@@ -371,7 +372,7 @@ def KMPSearch(E, Eprim):
             print(j)
          
         if j == M: 
-            result.append(((i-j),all_mappings))
+            result.append(((i-j),all_mappings[0]))
             print "Found pattern at index " + str(i-j) 
             j = lps[j-1] 
             i = i + 1
