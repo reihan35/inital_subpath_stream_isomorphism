@@ -264,7 +264,7 @@ def creat_all_mappings_for_single_graph(gprim,g):
 
     potential_paths = []
     for p in paths_in_gprim:
-        print(len(p))
+        #print(len(p))
         if len(p) == len(testing_g):
             potential_paths.append(p)
     
@@ -290,6 +290,7 @@ def computeLPSArray(E, T, lps):
   
     # the loop calculates lps[i] for i = 1 to M-1 
     while i < T: 
+        #if graphsequal(E[i],E[leni]): 
         if len(E[i])==len(E[leni]): 
             leni += 1
             lps[i] = leni
@@ -347,6 +348,8 @@ def KMPSearch(E, Eprim):
   
     # Preprocess the pattern (calculate lps[] array) 
     computeLPSArray(E, M, lps) 
+
+    print("LPPPPSSSSSS" + str(lps))
   
     i = 0 # index for txt[] 
     while i < N: 
@@ -365,25 +368,27 @@ def KMPSearch(E, Eprim):
             all_mappings = clean_mappings(all_mappings,i)
             print("all_mappings 2" + str(all_mappings))
         
-        if (all_mappings!=[]):
+        if (all_mappings!=[[]]):
             print("je rentre PASSSSS ICIIIIIIIIIIIIIII")
             j = j + 1; 
             i = i + 1; 
             print(j)
          
         if j == M: 
-            result.append(((i-j),all_mappings[0]))
+            result.append((((i-j)),all_mappings[0]))
             print "Found pattern at index " + str(i-j) 
-            j = lps[j-1] 
+            j = lps[j-1]
+            print(j)
             i = i + 1
 
         # mismatch after j matches 
-        elif i < N and all_mappings==[]: 
+        elif i < N and all_mappings==[[]]: 
             # Do not match lps[0..lps[j-1]] characters, 
             # they will match anyway 
             if j != 0: 
                 print("je tombe iciiiiiiiiiiii ")
-                j = lps[j-1] 
+                j = lps[j - 1]
+                all_mappings = [] 
             else: 
                 i += 1
     
@@ -392,5 +397,9 @@ def KMPSearch(E, Eprim):
 example_target_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target1.txt"),9)
 example_pattern_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern1.txt"),6)
 
+example_target_2 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target2.txt"),4)
+example_pattern_2 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern2.txt"),4)
 
-print(KMPSearch(example_pattern_1, example_target_1))
+example_target_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target3.txt"),5)
+example_pattern_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern3.txt"),5)
+print(KMPSearch(example_pattern_2, example_target_2))

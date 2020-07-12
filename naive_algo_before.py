@@ -322,7 +322,7 @@ example_pattern_4 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Sta
 #example_target_5 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target_1000inst_15vert.txt"),25)
 #example_pattern_5 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/pattern_2inst_5vert.txt"),10)
 
-print(naive_algo(example_pattern_1,example_target_1))
+print(naive_algo(example_pattern_3,example_target_3))
 '''
 somme = 1
 n = 5
