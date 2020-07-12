@@ -9,6 +9,7 @@ import os
 import os.path
 import matplotlib.pyplot as plt
 import math
+import copy
 
 
 def make_random_path(nbr_vertices,length):
@@ -290,8 +291,8 @@ def computeLPSArray(E, T, lps):
   
     # the loop calculates lps[i] for i = 1 to M-1 
     while i < T: 
-        #if graphsequal(E[i],E[leni]): 
-        if len(E[i])==len(E[leni]): 
+        if graphsequal(E[i],E[leni]): 
+        #if len(E[i])==len(E[leni]): 
             leni += 1
             lps[i] = leni
             i += 1
@@ -340,7 +341,7 @@ def KMPSearch(E, Eprim):
     N = len(Eprim) 
     result = []
     all_mappings = []
-  
+    all_mappings_bef = []
     # create lps[] that will hold the longest prefix suffix  
     # values for pattern 
     lps = [0]*M 
@@ -353,23 +354,26 @@ def KMPSearch(E, Eprim):
   
     i = 0 # index for txt[] 
     while i < N: 
+        print("voici i " + str(i))
+        print("voici j " + str(j))
         mapping = creat_all_mappings_for_single_graph(Eprim[i],E[j])
         print("voici mapping" + str(mapping))
         if (i==0):
-            print("voici i " + str(i))
+           # print("voici i " + str(i))
             all_mappings = [mapping]
             print(all_mappings)
         if(i>0):
-            print("voici i " + str(i))
-            print("voici j " + str(j))
+           # print("voici i " + str(i))
+           # print("voici j " + str(j))
+            all_mappings_bef = copy.deepcopy(all_mappings)
             all_mappings.append(mapping)
             print("all_mappings" + str(all_mappings))
             all_mappings = list(itertools.product(*all_mappings))
             all_mappings = clean_mappings(all_mappings,i)
             print("all_mappings 2" + str(all_mappings))
-        
+
         if (all_mappings!=[[]]):
-            print("je rentre PASSSSS ICIIIIIIIIIIIIIII")
+            print("egale")
             j = j + 1; 
             i = i + 1; 
             print(j)
@@ -386,10 +390,11 @@ def KMPSearch(E, Eprim):
             # Do not match lps[0..lps[j-1]] characters, 
             # they will match anyway 
             if j != 0: 
-                print("je tombe iciiiiiiiiiiii ")
+                print("not egale 1")
                 j = lps[j - 1]
-                all_mappings = [] 
+                all_mappings = copy.deepcopy(all_mappings_bef)
             else: 
+                print("not egale 2")
                 i += 1
     
     return result

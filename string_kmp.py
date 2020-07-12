@@ -158,14 +158,14 @@ def path_stream_matching(E,T,Eprim,Tprim,Vprim):
     return result
 
 
-
+'''
 def put(P):
     P2 =[]
     P2.append(-1)
     for i in range(0, len(P)) :
         P2.append(P[i])
     return P2
-
+'''
 
 #print(example_pattern)
 #print(preprocessing(put(example_pattern),7))
