@@ -14,7 +14,7 @@ import copy
 
 def make_random_path(nbr_vertices,length):
     l = random.sample(range(0,nbr_vertices), length)
-    print(l)
+   # print(l)
     return l
     '''
     for i in range(len(l)):
@@ -163,7 +163,7 @@ def creat_all_mappings(E,Eprim,t):
     for i in range (0,len(E)):
         list_mappings.append(creat_all_mappings_for_single_graph(Eprim[t+i],E[i]))
     
-    print("me voilaaaa" + str(list_mappings))
+    #print("me voilaaaa" + str(list_mappings))
     #print("me voilaaaaaaaaa" + str(list(itertools.product(*list_mappings))))
     
     return  list(itertools.product(*list_mappings))
@@ -177,8 +177,8 @@ def get_key(val,my_dict):
 #merges each mapping into one and checks if the mapping is valid by comparing it before and after for repeated keys and values
 def mergeDict(dict1, dict2):
     dict3 = dict1.copy()
-    print(dict3)
-    print(dict2)
+   # print(dict3)
+   # print(dict2)
     dict3.update(dict2)
     for key in dict3.keys():
         if key in dict2.keys() and key in dict1.keys():
@@ -205,8 +205,8 @@ def deep_list(x):
 
 
 def is_valid(mapping,first):
-    print("first" + str(first))
-    print(mapping)
+   # print("first" + str(first))
+   # print(mapping)
     result = deep_list(mapping)
     #if (first==1):
     dict3 = result[0].copy()
@@ -240,9 +240,9 @@ def creat_all_mappings_for_single_graph(gprim,g):
     testing_g = []
     list_mappis = []
     paths_in_gprim = []
-    print("je suis laaaaaaaa")
-    print(gprim)
-    print(g)
+   # print("je suis laaaaaaaa")
+   # print(gprim)
+   # print(g)
 
     for i in range(len(gprim)):
         for j in range(len(gprim)) :
@@ -275,7 +275,7 @@ def creat_all_mappings_for_single_graph(gprim,g):
             mapi[g_to_path_side_1[i]] = p[i]
         list_mappis.append(mapi)
     
-    print("je suis la liste des mappis" + str(list_mappis))
+   # print("je suis la liste des mappis" + str(list_mappis))
     return list_mappis
 
 #print(creat_all_mappings_for_single_graph([[0,1,1,0,0],[1,0,0,1,1],[1,0,0,0,0],[0,1,0,0,0],[0,1,0,0,0]],[[0,1,0],[1,0,1],[0,1,0]]))
@@ -342,6 +342,7 @@ def KMPSearch(E, Eprim):
     result = []
     all_mappings = []
     all_mappings_bef = []
+    copies = dict()
     # create lps[] that will hold the longest prefix suffix  
     # values for pattern 
     lps = [0]*M 
@@ -357,32 +358,35 @@ def KMPSearch(E, Eprim):
         print("voici i " + str(i))
         print("voici j " + str(j))
         mapping = creat_all_mappings_for_single_graph(Eprim[i],E[j])
-        print("voici mapping" + str(mapping))
+      #  print("voici mapping" + str(mapping))
         if (i==0):
            # print("voici i " + str(i))
             all_mappings = [mapping]
-            print(all_mappings)
+           # print(all_mappings)
         if(i>0):
-           # print("voici i " + str(i))
-           # print("voici j " + str(j))
+         #   print("voici i " + str(i))
+         #   print("voici j " + str(j))
             all_mappings_bef = copy.deepcopy(all_mappings)
             all_mappings.append(mapping)
             print("all_mappings" + str(all_mappings))
             all_mappings = list(itertools.product(*all_mappings))
             all_mappings = clean_mappings(all_mappings,i)
             print("all_mappings 2" + str(all_mappings))
-
+            print("copies = " + str(copies))
         if (all_mappings!=[[]]):
             print("egale")
+            if (lps[j]==0):
+                print "il rentre pas icccciiiiii"
+                copies[j] = copy.deepcopy(all_mappings)
             j = j + 1; 
             i = i + 1; 
-            print(j)
+           # print(j)
          
         if j == M: 
             result.append((((i-j)),all_mappings[0]))
-            print "Found pattern at index " + str(i-j) 
+           # print "Found pattern at index " + str(i-j) 
             j = lps[j-1]
-            print(j)
+           # print(j)
             i = i + 1
 
         # mismatch after j matches 
@@ -392,7 +396,13 @@ def KMPSearch(E, Eprim):
             if j != 0: 
                 print("not egale 1")
                 j = lps[j - 1]
-                all_mappings = copy.deepcopy(all_mappings_bef)
+                #all_mappings = copy.deepcopy(all_mappings_bef)
+                if (j>0):
+                    all_mappings = copy.deepcopy(copies.get(j))
+                else: 
+                    all_mappings = []
+                    #all_mappings_bef = []
+                #copies = dict()
             else: 
                 print("not egale 2")
                 i += 1
@@ -408,3 +418,19 @@ example_pattern_2 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Sta
 example_target_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target3.txt"),5)
 example_pattern_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern3.txt"),5)
 print(KMPSearch(example_pattern_2, example_target_2))
+
+'''
+somme = 1
+n = 5
+for i in range(n):
+    generate_random_target_stream(50,50)
+    generate_uniform_pattern(10,2,15)
+    example_target_5 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/target_50inst_50vert.txt"),70)
+    example_pattern_5 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/pattern_2inst_10vert.txt"),15)
+    start = timeit.default_timer()
+    print(KMPSearch(example_pattern_5,example_target_5))
+    stop = timeit.default_timer()
+    somme = somme + (stop - start)
+    print('Time: ', stop - start)
+print("temps moyenne " + str(somme/n))
+'''
