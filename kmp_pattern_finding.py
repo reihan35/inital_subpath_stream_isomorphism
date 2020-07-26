@@ -131,6 +131,37 @@ def neighbours(node,E):
     return n
 
 #BFS, un classique ! ;-)
+def bfs_k_length(l,gprim,start):
+    visited = []
+    for x in range(0,len(gprim)):
+        visited.append(0)
+    queue = []
+    all_paths = []
+
+    queue.append([start])
+    all_paths.append([start])
+    
+    i=0
+    while queue:
+        path = queue.pop(0)
+        node = path[-1]
+        visited[node]=1
+        for adjacent in neighbours(node,gprim):
+            #print(adjacent)
+            if visited[adjacent]==0:
+                print(all_paths)
+                i = i + 1 
+                new_path = list(path)
+                if (len(new_path)+1<=l):
+                    new_path.append(adjacent)
+                    queue.append(new_path)
+                    if (len(new_path)==l):
+                        all_paths.append(new_path)
+    
+    return all_paths[1:]
+#print(bfs(2,[[0,1,1,0,0,0,0,0],[1,0,0,1,0,0,0,1],[1,0,0,1,1,0,0,0],[0,1,1,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,0,0,0,1,1],[0,0,0,0,1,0,0,0],[0,1,0,0,1,0,0,0]],0))
+# returns cartesian product of mappings at each instant
+
 def bfs(gprim,start):
     visited = []
     for x in range(0,len(gprim)):
@@ -157,7 +188,6 @@ def bfs(gprim,start):
     
     return all_paths
 
-# returns cartesian product of mappings at each instant
 def creat_all_mappings(E,Eprim,t):
     list_mappings = []
     for i in range (0,len(E)):
@@ -239,7 +269,8 @@ def creat_all_mappings_for_single_graph(gprim,g):
     testing_gprim = []
     testing_g = []
     list_mappis = []
-    paths_in_gprim = []
+    potential_paths = []
+
    # print("je suis laaaaaaaa")
    # print(gprim)
    # print(g)
@@ -260,15 +291,9 @@ def creat_all_mappings_for_single_graph(gprim,g):
     g_to_path_side_1 = max((x) for x in g_to_paths)
     
     for v in testing_gprim:
-       for chemin in (bfs(gprim,v)):
-            paths_in_gprim.append(chemin)
+        c = bfs_k_length(len(testing_g),gprim,v)
+        potential_paths = potential_paths+c
 
-    potential_paths = []
-    for p in paths_in_gprim:
-        #print(len(p))
-        if len(p) == len(testing_g):
-            potential_paths.append(p)
-    
     for p in potential_paths:
         mapi = dict()
         for i in range(len(p)):
@@ -417,7 +442,8 @@ example_pattern_2 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Sta
 
 example_target_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target3.txt"),5)
 example_pattern_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern3.txt"),5)
-print(KMPSearch(example_pattern_2, example_target_2))
+print(KMPSearch(example_pattern_1, example_target_3))
+
 
 '''
 somme = 1
