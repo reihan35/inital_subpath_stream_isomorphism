@@ -149,7 +149,7 @@ def bfs_k_length(l,gprim,start):
         for adjacent in neighbours(node,gprim):
             #print(adjacent)
             if visited[adjacent]==0:
-                print(all_paths)
+                #print(all_paths)
                 i = i + 1 
                 new_path = list(path)
                 if (len(new_path)+1<=l):
@@ -157,9 +157,11 @@ def bfs_k_length(l,gprim,start):
                     queue.append(new_path)
                     if (len(new_path)==l):
                         all_paths.append(new_path)
+                else:
+                    return all_paths[1:]
     
     return all_paths[1:]
-#print(bfs(2,[[0,1,1,0,0,0,0,0],[1,0,0,1,0,0,0,1],[1,0,0,1,1,0,0,0],[0,1,1,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,0,0,0,1,1],[0,0,0,0,1,0,0,0],[0,1,0,0,1,0,0,0]],0))
+#print(bfs_k_length(2,[[0,1,1,0,0,0,0,0],[1,0,0,1,0,0,0,1],[1,0,0,1,1,0,0,0],[0,1,1,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,0,0,0,1,1],[0,0,0,0,1,0,0,0],[0,1,0,0,1,0,0,0]],0))
 # returns cartesian product of mappings at each instant
 
 def bfs(gprim,start):
@@ -234,7 +236,7 @@ def deep_list(x):
 
 
 
-def is_valid(mapping,first):
+def is_valid(mapping):
    # print("first" + str(first))
    # print(mapping)
     result = deep_list(mapping)
@@ -254,10 +256,10 @@ def is_valid(mapping,first):
     
     return dict3
 
-def clean_mappings(mappings,first):
+def clean_mappings(mappings):
     new_mappings = []
     for mapping in mappings:
-        m = is_valid(mapping,first)
+        m = is_valid(mapping)
         if m != -1:
             new_mappings.append(m)
     return [new_mappings]
@@ -366,7 +368,6 @@ def KMPSearch(E, Eprim):
     N = len(Eprim) 
     result = []
     all_mappings = []
-    all_mappings_bef = []
     copies = dict()
     # create lps[] that will hold the longest prefix suffix  
     # values for pattern 
@@ -376,8 +377,9 @@ def KMPSearch(E, Eprim):
     # Preprocess the pattern (calculate lps[] array) 
     computeLPSArray(E, M, lps) 
 
-    print("LPPPPSSSSSS" + str(lps))
-  
+    print("Tableau PI" + str(lps))
+    print("all_mappings" + str(all_mappings))
+
     i = 0 # index for txt[] 
     while i < N: 
         print("voici i " + str(i))
@@ -387,22 +389,23 @@ def KMPSearch(E, Eprim):
         if (i==0):
            # print("voici i " + str(i))
             all_mappings = [mapping]
-           # print(all_mappings)
+            print("all_mappings" + str(all_mappings))
         if(i>0):
          #   print("voici i " + str(i))
          #   print("voici j " + str(j))
-            all_mappings_bef = copy.deepcopy(all_mappings)
+           # all_mappings_bef = copy.deepcopy(all_mappings)
             all_mappings.append(mapping)
             print("all_mappings" + str(all_mappings))
             all_mappings = list(itertools.product(*all_mappings))
-            all_mappings = clean_mappings(all_mappings,i)
+            all_mappings = clean_mappings(all_mappings)
             print("all_mappings 2" + str(all_mappings))
-            print("copies = " + str(copies))
         if (all_mappings!=[[]]):
-            print("egale")
+            print("il y a des isomorphismes restantes")
             if (lps[j]==0):
-                print "il rentre pas icccciiiiii"
+                print "Comme Pi[j] est 0 on va rajouter une copie de all_mappings de cet instant dans copies"
                 copies[j] = copy.deepcopy(all_mappings)
+                print("copies = " + str(copies))
+
             j = j + 1; 
             i = i + 1; 
            # print(j)
@@ -419,7 +422,7 @@ def KMPSearch(E, Eprim):
             # Do not match lps[0..lps[j-1]] characters, 
             # they will match anyway 
             if j != 0: 
-                print("not egale 1")
+                print("Mismatch 1 : il y a PAS d'isomorphisme")
                 j = lps[j - 1]
                 #all_mappings = copy.deepcopy(all_mappings_bef)
                 if (j>0):
@@ -429,7 +432,7 @@ def KMPSearch(E, Eprim):
                     #all_mappings_bef = []
                 #copies = dict()
             else: 
-                print("not egale 2")
+                print("Mismatch 2 : il y a PAS d'isomorphisme")
                 i += 1
     
     return result
@@ -442,8 +445,7 @@ example_pattern_2 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Sta
 
 example_target_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target3.txt"),5)
 example_pattern_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern3.txt"),5)
-print(KMPSearch(example_pattern_1, example_target_3))
-
+print(KMPSearch(example_pattern_2, example_target_2))
 
 '''
 somme = 1
