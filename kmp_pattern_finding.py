@@ -11,17 +11,9 @@ import matplotlib.pyplot as plt
 import math
 import copy
 
-
 def make_random_path(nbr_vertices,length):
     l = random.sample(range(0,nbr_vertices), length)
-   # print(l)
     return l
-    '''
-    for i in range(len(l)):
-        if i!=len(l)-1:
-            print(str(l[i]) + " " + str(l[i+1]))'''
-
-#make_random_path(4,4)
 
 def generate_uniform_pattern(nbr_length_per_instance,nbr_instance,nbr_vertices):
     f = open("/home/fatemeh/Bureau/Stage/pattern_"+ str(nbr_instance) +"inst_"+ str(nbr_length_per_instance)+"vert.txt", "w")
@@ -91,7 +83,25 @@ def file_to_graphs(file):
         a = data[0]
     return graphs
 
-#print(file_to_graphs("/home/fatemeh/Bureau/Stage/graph.txt"))
+
+def file_to_paths(file):
+    f = open(file, "r")
+    a = -1
+    edges = []
+    graphs = []
+    i = 0
+    for line in f :
+        data = line.split()
+        if data[0] == a:
+            edges.append(data[2])
+        else:
+            edges = data[1:]
+            graphs.append(edges)
+        a = data[0]
+    return graphs
+
+print(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern3.txt"))
+print(file_to_paths("/home/fatemeh/Bureau/Stage/example_pattern3.txt"))
 
 #parses list of edges to adjacency matrix
 def to_adjacency(edges,n):
@@ -120,6 +130,13 @@ def graphsequal(g1,g2):
         for j in range (len(g1)) :
             if g1[i][j] != g2[i][j] :
                 return False
+    return True
+
+
+def pathequal(p1,p2):
+    for i in range (len(p1)) :
+        if(p1[i] != p2[i]):
+            return False
     return True
 
 #returns list of neighbours of a vertex in a graph
@@ -162,8 +179,6 @@ def bfs_k_length(l,gprim,start):
     
     return all_paths[1:]
 #print(bfs_k_length(2,[[0,1,1,0,0,0,0,0],[1,0,0,1,0,0,0,1],[1,0,0,1,1,0,0,0],[0,1,1,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,0,0,0,1,1],[0,0,0,0,1,0,0,0],[0,1,0,0,1,0,0,0]],0))
-# returns cartesian product of mappings at each instant
-
 def bfs(gprim,start):
     visited = []
     for x in range(0,len(gprim)):
@@ -209,8 +224,6 @@ def get_key(val,my_dict):
 #merges each mapping into one and checks if the mapping is valid by comparing it before and after for repeated keys and values
 def mergeDict(dict1, dict2):
     dict3 = dict1.copy()
-   # print(dict3)
-   # print(dict2)
     dict3.update(dict2)
     for key in dict3.keys():
         if key in dict2.keys() and key in dict1.keys():
@@ -237,29 +250,20 @@ def deep_list(x):
 
 
 def is_valid(mapping):
-   # print("first" + str(first))
-   # print(mapping)
     result = deep_list(mapping)
-    #if (first==1):
     dict3 = result[0].copy()
     for dict2 in result:
         dict3 = mergeDict(dict3, dict2)
         if(dict3 == -1):
             return -1
-    '''else:
-        result[0].append(result[len(result)-1])
-        dict3 = result[0][0].copy()
-        for dict2 in result[0]:
-            dict3 = mergeDict(dict3, dict2)
-            if(dict3 == -1):
-                return -1'''
-    
     return dict3
 
 def clean_mappings(mappings):
     new_mappings = []
     for mapping in mappings:
+        print(mapping)
         m = is_valid(mapping)
+        print(m)
         if m != -1:
             new_mappings.append(m)
     return [new_mappings]
@@ -273,15 +277,16 @@ def creat_all_mappings_for_single_graph(gprim,g):
     list_mappis = []
     potential_paths = []
 
-   # print("je suis laaaaaaaa")
-   # print(gprim)
-   # print(g)
+    paths_in_gprim = []
 
+
+    #Trouver les sommets du tareget
     for i in range(len(gprim)):
         for j in range(len(gprim)) :
             if gprim[i][j] == 1 and i not in testing_gprim:
                 testing_gprim.append(i)
     
+    #Trouver le point de depart de BFS du pattern
     for i in range(len(g)):
         for j in range(len(g)) :
             if g[i][j] == 1 and i not in testing_g:
@@ -291,10 +296,20 @@ def creat_all_mappings_for_single_graph(gprim,g):
 
     g_to_paths = bfs(g,start)
     g_to_path_side_1 = max((x) for x in g_to_paths)
-    
+    '''
     for v in testing_gprim:
         c = bfs_k_length(len(testing_g),gprim,v)
-        potential_paths = potential_paths+c
+        potential_paths = potential_paths+c'''
+    for v in testing_gprim:
+       for chemin in (bfs(gprim,v)):
+            paths_in_gprim.append(chemin)
+    
+    print("POTENTIEL" + str(potential_paths))
+    potential_paths = []
+    for p in paths_in_gprim:
+        #print(len(p))
+        if len(p) == len(testing_g):
+            potential_paths.append(p)
 
     for p in potential_paths:
         mapi = dict()
@@ -302,7 +317,6 @@ def creat_all_mappings_for_single_graph(gprim,g):
             mapi[g_to_path_side_1[i]] = p[i]
         list_mappis.append(mapi)
     
-   # print("je suis la liste des mappis" + str(list_mappis))
     return list_mappis
 
 #print(creat_all_mappings_for_single_graph([[0,1,1,0,0],[1,0,0,1,1],[1,0,0,0,0],[0,1,0,0,0],[0,1,0,0,0]],[[0,1,0],[1,0,1],[0,1,0]]))
@@ -335,33 +349,6 @@ def computeLPSArray(E, T, lps):
                 lps[i] = 0
                 i += 1
 
-def algo_back_track(G_i,G_prim_i):
-    mappings = creat_all_mappings_for_single_graph(G_prim_i,G_i)
-    if mappings != []:
-        return mappings
-   
-'''
-all_mappings = []
-mapping = algo_back_track([[0,1,0,0,0],[1,0,1,0,0],[0,1,0,0,0]],[[0,1,0,0,1],[1,0,1,1,0],[0,1,0,0,0],[0,1,0,0,0],[1,0,0,0,0]])
-print(mapping)
-all_mappings.append(mapping)
-#all_mappings = list(itertools.product(*all_mappings))
-print(all_mappings)
-mapping = algo_back_track([[0,0,0,0,1],[0,0,0,0,1,0]],[[0,1,0,0,0],[0,0,1,1,0],[0,1,0,0,0],[0,1,0,0,0]])
-print(mapping)
-all_mappings.append(mapping)
-all_mappings = list(itertools.product(*all_mappings))
-print(all_mappings)
-print(clean_mappings(all_mappings))
-
-mapping = algo_back_track([[0,1,0],[1,0,1],[0,1,0]],[[0,1,0],[1,0,1],[0,1,0]])
-all_mappings = [all_mappings]
-all_mappings.append(mapping)
-all_mappings = list(itertools.product(*all_mappings))
-print(all_mappings)
-print(clean_mappings(all_mappings))
-
-'''
 
 def KMPSearch(E, Eprim): 
     M = len(E) 
@@ -396,6 +383,7 @@ def KMPSearch(E, Eprim):
            # all_mappings_bef = copy.deepcopy(all_mappings)
             all_mappings.append(mapping)
             print("all_mappings" + str(all_mappings))
+            print("MAPPING" + str(mapping))
             all_mappings = list(itertools.product(*all_mappings))
             all_mappings = clean_mappings(all_mappings)
             print("all_mappings 2" + str(all_mappings))
@@ -445,7 +433,7 @@ example_pattern_2 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Sta
 
 example_target_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target3.txt"),5)
 example_pattern_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern3.txt"),5)
-print(KMPSearch(example_pattern_2, example_target_2))
+print(KMPSearch(example_pattern_1, example_target_1))
 
 '''
 somme = 1
@@ -461,4 +449,32 @@ for i in range(n):
     somme = somme + (stop - start)
     print('Time: ', stop - start)
 print("temps moyenne " + str(somme/n))
+'''
+
+'''
+def algo_back_track(G_i,G_prim_i):
+    mappings = creat_all_mappings_for_single_graph(G_prim_i,G_i)
+    if mappings != []:
+        return mappings
+   
+all_mappings = []
+mapping = algo_back_track([[0,1,0,0,0],[1,0,1,0,0],[0,1,0,0,0]],[[0,1,0,0,1],[1,0,1,1,0],[0,1,0,0,0],[0,1,0,0,0],[1,0,0,0,0]])
+print(mapping)
+all_mappings.append(mapping)
+#all_mappings = list(itertools.product(*all_mappings))
+print(all_mappings)
+mapping = algo_back_track([[0,0,0,0,1],[0,0,0,0,1,0]],[[0,1,0,0,0],[0,0,1,1,0],[0,1,0,0,0],[0,1,0,0,0]])
+print(mapping)
+all_mappings.append(mapping)
+all_mappings = list(itertools.product(*all_mappings))
+print(all_mappings)
+print(clean_mappings(all_mappings))
+
+mapping = algo_back_track([[0,1,0],[1,0,1],[0,1,0]],[[0,1,0],[1,0,1],[0,1,0]])
+all_mappings = [all_mappings]
+all_mappings.append(mapping)
+all_mappings = list(itertools.product(*all_mappings))
+print(all_mappings)
+print(clean_mappings(all_mappings))
+
 '''
