@@ -83,6 +83,44 @@ def file_to_graphs(file):
         a = data[0]
     return graphs
 
+def file_to_graphs_present_vertices(file):
+    f = open(file, "r")
+    a = -1
+    edges = []
+    graphs = []
+    present_v = []
+    edges2 = []
+    maxi = 0
+
+    for line in f : 
+        data = line.split()
+        if data[0] == a:
+            edges2.append(data[1:])
+            if(int(data[1]) not in edges):
+                edges.append(int(data[1]))
+            if(int(data[2]) not in edges):
+                edges.append(int(data[2]))
+            
+            if (edges != []):
+                print(edges)
+                if max(edges) > maxi:
+                    maxi = max(edges)
+                print(maxi)
+        else:
+            
+            edges = []
+            edges = edges + list(map(int, data[1:])) 
+            present_v.append(edges)
+
+            edges2 = []
+            edges2.append(data[1:])
+            graphs.append(edges2)
+
+        a = data[0]
+    return (graphs,present_v,maxi+1)
+
+#print(file_to_graphs_present_vertices("/home/fatemeh/Bureau/Stage/example_target1.txt"))
+
 
 def file_to_paths(file):
     f = open(file, "r")
@@ -272,17 +310,10 @@ def clean_mappings(mappings):
 #print(is_valid(({0: 2, 1: 1, 2: 0}, {2: 0, 3: 6, 4: 5}, {4: 5, 5: 7})))
 
 #Calculates all possible isomorphism by finding paths of desired length all over the graph at the instance
-def creat_all_mappings_for_single_graph(gprim,g):
-    testing_gprim = []
+def creat_all_mappings_for_single_graph(gprim,g,testing_gprim):
+ #   testing_gprim = []
     list_mappis = []
     potential_paths = []
-
-    #Trouver les sommets du tareget
-    for i in range(len(gprim)):
-        for j in range(len(gprim)) :
-            if gprim[i][j] == 1 and i not in testing_gprim:
-                testing_gprim.append(i)
-    
     
     for v in testing_gprim:
         c = bfs_k_length(len(g),gprim,v)
@@ -329,12 +360,13 @@ def computeLPSArray(E, T, lps):
                 i += 1
 
 
-def KMPSearch(E, Eprim): 
+def KMPSearch(E, Eprim,testing_gprim): 
     M = len(E) 
     N = len(Eprim) 
     result = []
     all_mappings = []
     copies = dict()
+
     # create lps[] that will hold the longest prefix suffix  
     # values for pattern 
     lps = [0]*M 
@@ -350,7 +382,7 @@ def KMPSearch(E, Eprim):
     while i < N: 
         print("voici i " + str(i))
         print("voici j " + str(j))
-        mapping = creat_all_mappings_for_single_graph(Eprim[i],E[j])
+        mapping = creat_all_mappings_for_single_graph(Eprim[i],E[j],testing_gprim[i])
       #  print("voici mapping" + str(mapping))
         if (i==0):
            # print("voici i " + str(i))
@@ -404,9 +436,14 @@ def KMPSearch(E, Eprim):
     
     return result
 
-example_target_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target1.txt"),9)
+(tomatrix, testing_grpim,maxi) = file_to_graphs_present_vertices("/home/fatemeh/Bureau/Stage/example_target1.txt")
+example_target_1 = to_list_of_matrices(tomatrix,maxi)
+
+#example_target_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target1.txt"),9)
 #example_pattern_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern1.txt"),6)
 example_pattern_1 = file_to_paths("/home/fatemeh/Bureau/Stage/example_pattern1.txt")
+
+print(KMPSearch(example_pattern_1, example_target_1,testing_grpim))
 
 
 example_target_2 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target2.txt"),4)
@@ -415,7 +452,6 @@ example_pattern_2 = file_to_paths("/home/fatemeh/Bureau/Stage/example_pattern2.t
 
 example_target_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target3.txt"),5)
 example_pattern_3 = file_to_paths("/home/fatemeh/Bureau/Stage/example_pattern3.txt")
-print(KMPSearch(example_pattern_1, example_target_1))
 
 '''
 somme = 1
