@@ -91,23 +91,22 @@ def file_to_graphs_present_vertices(file):
     present_v = []
     edges2 = []
     maxi = 0
-
+    i = 0
     for line in f : 
         data = line.split()
+        max2 = max(list(map(int, data[1:])))
+        if max2 > maxi:
+            maxi = max2
+
         if data[0] == a:
             edges2.append(data[1:])
             if(int(data[1]) not in edges):
                 edges.append(int(data[1]))
             if(int(data[2]) not in edges):
                 edges.append(int(data[2]))
-            
             if (edges != []):
                 print(edges)
-                if max(edges) > maxi:
-                    maxi = max(edges)
-                print(maxi)
         else:
-            
             edges = []
             edges = edges + list(map(int, data[1:])) 
             present_v.append(edges)
@@ -115,7 +114,6 @@ def file_to_graphs_present_vertices(file):
             edges2 = []
             edges2.append(data[1:])
             graphs.append(edges2)
-
         a = data[0]
     return (graphs,present_v,maxi+1)
 
@@ -145,8 +143,11 @@ def file_to_paths(file):
 #parses list of edges to adjacency matrix
 def to_adjacency(edges,n):
     size = n
+    #print("je suis n" + str(n))
     res = [ [ 0 for i in range(size+1) ] for j in range(size+1) ] 
     for edge in edges:
+        #print(edge[0])
+        #print(edge[1])
         res[int(edge[0])][int(edge[1])] = 1 
         res[int(edge[1])][int(edge[0])] = 1
     return res
@@ -409,8 +410,9 @@ def KMPSearch(E, Eprim,testing_gprim):
             i = i + 1; 
            # print(j)
          
-        if j == M: 
+        if j == M:  
             result.append((((i-j)),all_mappings[0]))
+            #return result
            # print "Found pattern at index " + str(i-j) 
             j = lps[j-1]
            # print(j)
@@ -436,12 +438,13 @@ def KMPSearch(E, Eprim,testing_gprim):
     
     return result
 
-(tomatrix, testing_grpim,maxi) = file_to_graphs_present_vertices("/home/fatemeh/Bureau/Stage/example_target1.txt")
+(tomatrix, testing_grpim,maxi) = file_to_graphs_present_vertices("/home/fatemeh/Bureau/Stage/example_target3.txt")
+print(tomatrix)
+print(testing_grpim)
+print("MAXI" + str(maxi))
 example_target_1 = to_list_of_matrices(tomatrix,maxi)
 
-#example_target_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target1.txt"),9)
-#example_pattern_1 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern1.txt"),6)
-example_pattern_1 = file_to_paths("/home/fatemeh/Bureau/Stage/example_pattern1.txt")
+example_pattern_1 = file_to_paths("/home/fatemeh/Bureau/Stage/example_pattern3.txt")
 
 print(KMPSearch(example_pattern_1, example_target_1,testing_grpim))
 
@@ -452,6 +455,12 @@ example_pattern_2 = file_to_paths("/home/fatemeh/Bureau/Stage/example_pattern2.t
 
 example_target_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target3.txt"),5)
 example_pattern_3 = file_to_paths("/home/fatemeh/Bureau/Stage/example_pattern3.txt")
+
+##################TESTS####################
+def execute(T_G, V_G, T_P, V_P):
+    generate_random_target_stream(50,50)
+
+
 
 '''
 somme = 1

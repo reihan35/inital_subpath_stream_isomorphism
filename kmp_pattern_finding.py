@@ -433,7 +433,7 @@ example_pattern_2 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Sta
 
 example_target_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_target3.txt"),5)
 example_pattern_3 = to_list_of_matrices(file_to_graphs("/home/fatemeh/Bureau/Stage/example_pattern3.txt"),5)
-print(KMPSearch(example_pattern_1, example_target_1))
+print(KMPSearch(example_pattern_3, example_target_3))
 
 '''
 somme = 1
